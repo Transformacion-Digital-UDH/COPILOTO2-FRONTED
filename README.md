@@ -107,24 +107,3 @@ npm run preview      # Preview del build
 npm run lint         # Linting del código
 ```
 
-## 🌟 Características Principales
-
-- ✅ **Arquitectura Modular**: Separación por actores del proceso de investigación
-- ✅ **Responsive Design**: Adaptable a dispositivos móviles y desktop
-- ✅ **Autenticación Institucional**: Login con credenciales UDH
-- ✅ **Gestión de Roles**: Permisos específicos por tipo de usuario
-- ✅ **Flujos de Trabajo**: Procesos definidos para cada etapa de investigación
-- ✅ **Comunicación Integrada**: Sistema de mensajería entre actores
-- ✅ **Seguimiento en Tiempo Real**: Estado actualizado de proyectos
-- ✅ **Documentación Digital**: Gestión de documentos y versiones
-
-## 👥 Contribución
-
-1. Fork el proyecto
-2. Clonar el repositorio git clone "https://github.com/TU_USUARIO/NOMBRE_DEL_PROYECTO.git"
-3. Crea una rama para tu nueva funcionalidad o mejora "git checkout -b nombre_de_tu_rama"
-4. Commit tus cambios `git commit -m 'agregar_su_titulo_que_considere_en_referencia_a_su_cambio'`
-5. Push a la rama (`git push`)
-
----
-⭐ **Desarrollado con ❤️ para la Universidad de Huánuco**
