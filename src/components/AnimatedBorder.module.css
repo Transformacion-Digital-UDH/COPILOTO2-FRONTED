@@ -1,0 +1,33 @@
+.cardWrapperLight::before,
+.cardWrapperDark::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -25%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  animation: borderSpin 5s linear infinite;
+}
+
+.cardWrapperLight::before {
+  background: conic-gradient(
+    #39B49E00 40deg,
+    #F2A603 80deg,
+    transparent 30deg
+  );
+}
+
+.cardWrapperDark::before {
+  background: conic-gradient(
+    #39B49E00 40deg,
+    #39B49E 80deg,
+    transparent 30deg
+  );
+}
+
+@keyframes borderSpin {
+  100% {
+    transform: rotate(-360deg);
+  }
+}
