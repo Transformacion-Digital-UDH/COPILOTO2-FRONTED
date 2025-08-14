@@ -1,12 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { useState } from 'react'
+import AppRouter from './router/AppRouter'
 import './App.css'
 
 function App() {
-  return(
-    <Router>
-      <AppRouter />
-    </Router>
+  return (
+    <AppRouter />
   )
 }
 
