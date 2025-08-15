@@ -1,13 +1,7 @@
 import React from "react";
-import { useButtonState } from "../hooks/useButtonState";
+import { useButtonState } from "../hooks/useButtonState.js";
 
-interface ButtonObserveProps {
-  estado: string;
-  label: string;
-  onClick?: () => void;
-}
-
-const ButtonObserve: React.FC<ButtonObserveProps> = ({ estado, label, onClick }) => {
+const ButtonObserve = ({ estado, label, onClick }) => {
   // Usar el hook compartido
   const { isVisible, isDisabled } = useButtonState(estado);
 

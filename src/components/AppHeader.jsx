@@ -1,19 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface NavItem {
-  name: string;
-  href: string;
-}
-
-const AppHeader: React.FC = () => {
-  const internalNavigation: NavItem[] = [
+const AppHeader = () => {
+  const internalNavigation = [
     { name: "Inicio", href: "/" },
     { name: "Nosotros", href: "#" },
   ];
 
     // Enlaces externos
-  const externalLinks: NavItem[] = [
+  const externalLinks = [
     { name: "Copilot", href: "https://copiloto.udh.edu.pe/" },
   ];
 
@@ -22,7 +17,7 @@ const AppHeader: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const selectItem = (name: string) => {
+  const selectItem = (name) => {
     setSelected(name);
     setMenuOpen(false);
   };
@@ -31,12 +26,12 @@ const AppHeader: React.FC = () => {
     setMenuOpen((prev) => !prev);
   };
 
-  const handleInternalNavigation = (href: string, name: string) => {
+  const handleInternalNavigation = (href, name) => {
     navigate(href);
     selectItem(name);
   };
 
-  const handleExternalNavigation = (href: string, name: string) => {
+  const handleExternalNavigation = (href, name) => {
     window.open(href, '_blank', 'noopener noreferrer');
     selectItem(name);
   };

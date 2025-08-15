@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { sidebarConfig, SidebarSection } from '../config/sidebar-config';
+import { sidebarConfig } from '../config/sidebar-config';
 
-export const useSidebarConfig = (role: string) => {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+export const useSidebarConfig = (role) => {
+  const [openSections, setOpenSections] = useState({});
 
   // Obtener configuración según el rol
   const sections = useMemo(() => {
@@ -10,7 +10,7 @@ export const useSidebarConfig = (role: string) => {
   }, [role]);
 
   // Función para alternar sección
-  const toggleSection = (sectionName: string) => {
+  const toggleSection = (sectionName) => {
     setOpenSections(prev => ({
       ...prev,
       [sectionName]: !prev[sectionName]
@@ -18,23 +18,23 @@ export const useSidebarConfig = (role: string) => {
   };
 
   // Verificar si una sección está abierta
-  const isSectionOpen = (sectionName: string) => {
+  const isSectionOpen = (sectionName) => {
     return openSections[sectionName] || false;
   };
 
   // Verificar si un submenú está activo
-  const isSubmenuActive = (path: string, currentPath: string) => {
+  const isSubmenuActive = (path, currentPath) => {
     return currentPath === path;
   };
 
   // Verificar si una sección está activa (tiene submenús activos)
-  const isSectionActive = (section: SidebarSection, currentPath: string) => {
+  const isSectionActive = (section, currentPath) => {
     return section.submenus.some(submenu => isSubmenuActive(submenu.path, currentPath));
   };
 
   // Abrir sección si tiene submenús activos
-  const openActiveSections = (currentPath: string) => {
-    const newOpenSections: Record<string, boolean> = {};
+  const openActiveSections = (currentPath) => {
+    const newOpenSections = {};
     sections.forEach(section => {
       if (isSectionActive(section, currentPath)) {
         newOpenSections[section.name] = true;

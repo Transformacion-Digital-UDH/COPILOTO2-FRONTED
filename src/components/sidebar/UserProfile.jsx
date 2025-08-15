@@ -1,13 +1,6 @@
 import React from 'react';
 
-interface UserProfileProps {
-  fullName: string;
-  role: string;
-  imageProfile?: string;
-  isOpen: boolean;
-}
-
-const UserProfile: React.FC<UserProfileProps> = ({
+const UserProfile = ({
   fullName,
   role,
   imageProfile,

@@ -1,10 +1,6 @@
 import React from "react";
 
-interface EstadoProps {
-  estado: string;
-}
-
-const Estado: React.FC<EstadoProps> = ({ estado }) => {
+const Estado = ({ estado }) => {
   const estadoLowerCase = estado?.toLowerCase();
 
   const getEstadoClase = () => {
@@ -27,7 +23,7 @@ const Estado: React.FC<EstadoProps> = ({ estado }) => {
     }
   };
 
-  const formatEstado = (texto: string) => {
+  const formatEstado = (texto) => {
     if (!texto) return "Pendiente";
     return texto
       .replace(/_/g, " ")

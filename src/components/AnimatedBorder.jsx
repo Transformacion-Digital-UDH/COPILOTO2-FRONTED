@@ -1,14 +1,7 @@
 import React from "react";
 import styles from "./AnimatedBorder.module.css";
 
-interface AnimatedBorderProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
-  darkMode?: boolean; // Nueva prop para controlar el modo
-}
-
-const AnimatedBorder: React.FC<AnimatedBorderProps> = ({
+const AnimatedBorder = ({
   children,
   onClick,
   className = "",
