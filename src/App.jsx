@@ -1,13 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import { useState } from 'react'
-import './App.css'
 
-function App() {
-  return(
-    <Router>
+import { ThemeProvider } from '@/context/ThemeContext';
+import AppRouter from '@/router/AppRouter';
+
+export default function App() {
+  return (
+    <ThemeProvider>
       <AppRouter />
-    </Router>
-  )
+    </ThemeProvider>
+  );
 }
-
-export default App

@@ -1,0 +1,33 @@
+.btn-float-theme {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 40;
+  border-radius: 50%;
+  width: 55px;   
+  height: 55px;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1f2937; 
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-float-theme svg {       
+  display: block;
+}
+
+.icon-white {
+  width: 22px;
+  height: 22px;
+  color: #fff;               
+}
+
+.icon-blue {
+  width: 22px;
+  height: 22px;
+  color: #2563eb;
+}
