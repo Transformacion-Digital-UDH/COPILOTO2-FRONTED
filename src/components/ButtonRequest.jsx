@@ -1,13 +1,6 @@
 import React from "react";
 
-interface ButtonRequestProps {
-  label: string;
-  loading?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
-}
-
-const ButtonRequest: React.FC<ButtonRequestProps> = ({
+const ButtonRequest = ({
   label,
   loading = false,
   disabled = false,

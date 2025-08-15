@@ -1,14 +1,6 @@
 import React, { useEffect } from "react";
 
-interface ModalProps {
-  open: boolean;
-  className?: string;
-  onClose: () => void;
-  content?: React.ReactNode;
-  actions?: React.ReactNode;
-}
-
-const Modal: React.FC<ModalProps> = ({
+const Modal = ({
   open,
   className = "w-[40rem]",
   onClose,
@@ -17,7 +9,7 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   // Cerrar con tecla Escape
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
+    const handleEscape = (event) => {
       if (event.key === "Escape") {
         onClose();
       }

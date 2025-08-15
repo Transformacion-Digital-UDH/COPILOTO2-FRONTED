@@ -9,21 +9,7 @@ import {
   Settings
 } from 'lucide-react';
 
-export interface SidebarSubmenu {
-  name: string;
-  label: string;
-  path: string;
-  namecount?: string;
-}
-
-export interface SidebarSection {
-  name: string;
-  label: string;
-  icon: React.ComponentType<any>;
-  submenus: SidebarSubmenu[];
-}
-
-export const sidebarConfig: Record<string, SidebarSection[]> = {
+export const sidebarConfig = {
   estudiante: [
     {
       name: 'ProyectoDeTesis',

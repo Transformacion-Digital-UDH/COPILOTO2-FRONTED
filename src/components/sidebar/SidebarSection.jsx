@@ -1,21 +1,7 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { SidebarSection, SidebarSubmenu } from '../../config/sidebar-config';
 
-interface SidebarSectionProps {
-  section: SidebarSection;
-  isOpen: boolean;
-  isActive: boolean;
-  onToggle: () => void;
-  onNavigate?: (path: string) => void;
-  counts?: Record<string, number>;
-  currentPath: string;
-  role: string;
-  sidebarOpen: boolean;
-  index: number;
-}
-
-const SidebarSectionComponent: React.FC<SidebarSectionProps> = ({
+const SidebarSectionComponent = ({
   section,
   isOpen,
   isActive,
@@ -27,11 +13,11 @@ const SidebarSectionComponent: React.FC<SidebarSectionProps> = ({
   sidebarOpen,
   index
 }) => {
-  const isSubmenuActive = (submenu: SidebarSubmenu) => {
+  const isSubmenuActive = (submenu) => {
     return currentPath === submenu.path;
   };
 
-  const handleSubmenuClick = (submenu: SidebarSubmenu) => {
+  const handleSubmenuClick = (submenu) => {
     if (onNavigate) {
       onNavigate(submenu.path);
     }

@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-interface AlertProps {
-  message: string[];
-  type?: 'success' | 'error' | 'warning';
-  duration?: number;
-  onAlertHidden?: () => void;
-}
-
-const Alert: React.FC<AlertProps> = ({ 
+const Alert = ({ 
   message, 
   type = 'success', 
   duration = 3000, 
@@ -16,7 +9,7 @@ const Alert: React.FC<AlertProps> = ({
   const [isVisible, setIsVisible] = useState(true);
 
   // Función para obtener el color del icono según el tipo
-  const getIconColor = (): string => {
+  const getIconColor = () => {
     switch (type) {
       case 'success':
         return 'text-green-500';

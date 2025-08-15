@@ -1,27 +1,15 @@
 import React, { useEffect } from 'react';
-import { useSidebarConfig } from '../hooks/useSidebarConfig';
-import UserProfile from './sidebar/UserProfile';
-import SidebarSection from './sidebar/SidebarSection';
+import { useSidebarConfig } from '../hooks/useSidebarConfig.js';
+import UserProfile from './sidebar/UserProfile.jsx';
+import SidebarSection from './sidebar/SidebarSection.jsx';
 
-interface SidebarProps {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  isDark?: boolean;
-  role: string;
-  fullName: string;
-  isJury?: boolean;
-  imageProfile?: string;
-  counts?: Record<string, number>;
-  currentPath?: string;
-  onNavigate?: (path: string) => void;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({
+const Sidebar = ({
   isOpen,
   setIsOpen,
   isDark = false,
   role,
   fullName,
+  isJury,
   imageProfile,
   counts = {},
   currentPath = '/',
@@ -41,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     openActiveSections(currentPath);
   }, [currentPath, openActiveSections]);
 
-  const handleNavigate = (path: string) => {
+  const handleNavigate = (path) => {
     if (onNavigate) {
       onNavigate(path);
     }

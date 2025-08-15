@@ -1,13 +1,7 @@
 import React from "react";
-import { useButtonState } from "../hooks/useButtonState";
+import { useButtonState } from "../hooks/useButtonState.js";
 
-interface ButtonGenerateProps {
-  estado: string;
-  label: string;
-  onClick?: () => void;
-}
-
-const ButtonGenerate: React.FC<ButtonGenerateProps> = ({ estado, label, onClick }) => {
+const ButtonGenerate = ({ estado, label, onClick }) => {
   // Usar el hook compartido
   const { isVisible, isDisabled } = useButtonState(estado);
 
