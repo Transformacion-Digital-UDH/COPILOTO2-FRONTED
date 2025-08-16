@@ -10,6 +10,59 @@ import {
 } from 'lucide-react';
 
 export const sidebarConfig = {
+  tesista: [
+    {
+      name: 'ProyectoDeTesis',
+      label: 'Plan de Tesis',
+      icon: FileText,
+      submenus: [
+        { name: 'Designacion de asesor', label: 'Designación de asesor', path: '/tesista/solicitar-asesor' },
+        { name: 'Conformidad por el asesor', label: 'Conformidad por el asesor', path: '/tesista/conformidad-asesor' },
+        { name: 'Designacion de jurados', label: 'Designación de jurados', path: '/tesista/designacion-jurado' },
+        { name: 'Conformidad por los jurados', label: 'Conformidad por los jurados', path: '/tesista/conformidad-jurado' },
+        { name: 'Aprobación del plan de tesis', label: 'Aprobación del plan de tesis', path: '/tesista/aprobacion-proyecto' }
+      ]
+    },
+    {
+      name: 'Ejecucion',
+      label: 'Ejecución',
+      icon: Play,
+      submenus: [
+        { name: 'Ejecución del plan de tesis', label: 'Ejecución del plan de tesis', path: '/tesista/progreso' }
+      ]
+    },
+    {
+      name: 'InformeFinal',
+      label: 'Informe Final de Tesis',
+      icon: ClipboardList,
+      submenus: [
+        { name: 'Conformidad del informe final por el asesor', label: 'Conformidad por el asesor', path: '/tesista/conformidad-informe-asesor' },
+        { name: 'Designacion de jurado para el informe final', label: 'Designación de jurados', path: '/tesista/designacion-informe-jurado' },
+        { name: 'Conformidad del informe final por los jurados', label: 'Conformidad por los jurados', path: '/tesista/conformidad-informe-jurado' },
+        { name: 'Conformidad por Comité de Integridad Científica (VRI)', label: 'Conformidad por Comité de Integridad Científica (VRI)', path: '/tesista/conformidad-vri' },
+        { name: 'Aprobacion del informe final de tesis', label: 'Aprobación del informe final de tesis', path: '/tesista/aprobacion-informe' }
+      ]
+    },
+    {
+      name: 'Sustentacion',
+      label: 'Sustentación',
+      icon: Presentation,
+      submenus: [
+        { name: 'AptoParaSustentar', label: 'Apto para sustentar', path: '/tesista/declaracion-apto-sustentar' },
+        { name: 'DesignacionFechayHora', label: 'Designación de fecha y hora', path: '/tesista/designacion-fecha-hora' },
+        { name: 'Sustentación', label: 'Sustentación de tesis', path: '/tesista/sustentacion' }
+      ]
+    },
+    {
+      name: 'Herramientas',
+      label: 'Herramientas',
+      icon: Settings,
+      submenus: [
+        { name: 'Mis Documentos', label: 'Mis Documentos', path: '/tesista/mis-documentos' }
+      ]
+    }
+  ],
+
   estudiante: [
     {
       name: 'ProyectoDeTesis',

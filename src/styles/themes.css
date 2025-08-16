@@ -1,0 +1,112 @@
+/* Variables CSS para duraciones de transición */
+:root {
+  /* Duraciones del sidebar - sincronizadas para evitar huecos */
+  --sidebar-expand-duration: 400ms;
+  --sidebar-collapse-duration: 400ms;
+  --sidebar-content-duration: 200ms;
+  
+  /* Duraciones del layout - todas sincronizadas con el sidebar */
+  --layout-transition-duration: 400ms;
+  --header-transition-duration: 400ms;
+  --main-transition-duration: 400ms;
+  
+  /* Duraciones de componentes */
+  --button-toggle-duration: 400ms;
+  --profile-transition-duration: 200ms;
+  --section-hover-duration: 200ms;
+  --section-expand-duration: 400ms;
+  --section-item-duration: 300ms;
+  
+  /* Curvas de easing optimizadas para transiciones suaves */
+  --ease-expand: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-collapse: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Estilos para el tema event */
+.event-theme {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --accent-color: #667eea;
+}
+
+/* Transiciones suaves con View Transitions API */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+}
+
+::view-transition-old(root) {
+  opacity: 1;
+}
+
+::view-transition-new(root) {
+  opacity: 0;
+  animation-name: fade-in;
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Estilos específicos para tema event */
+.event-theme .bg-gradient-to-br {
+  background: var(--primary-gradient);
+}
+
+.event-theme .text-green-400 {
+  color: #a78bfa;
+}
+
+.event-theme .bg-green-500 {
+  background: var(--secondary-gradient);
+}
+
+.event-theme .hover\:bg-green-600:hover {
+  background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+}
+
+/* Efectos especiales para tema event */
+.event-theme {
+  position: relative;
+}
+
+.event-theme::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Clases personalizadas para transiciones de sidebar */
+.sidebar-expand {
+  transition-duration: var(--sidebar-expand-duration);
+  transition-timing-function: var(--ease-expand);
+}
+
+.sidebar-collapse {
+  transition-duration: var(--sidebar-collapse-duration);
+  transition-timing-function: var(--ease-collapse);
+}
+
+.layout-transition {
+  transition-duration: var(--layout-transition-duration);
+  transition-timing-function: var(--ease-expand);
+}
+
+.header-transition {
+  transition-duration: var(--header-transition-duration);
+  transition-timing-function: var(--ease-expand);
+}
+
+.button-transition {
+  transition-duration: var(--button-toggle-duration);
+  transition-timing-function: var(--ease-expand);
+}

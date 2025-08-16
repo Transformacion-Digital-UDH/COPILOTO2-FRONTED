@@ -45,7 +45,7 @@ const AppHeader = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md font-Roboto">
+    <nav className="bg-white dark:bg-gray-800 shadow-md font-Roboto border-b dark:border-gray-700">
       <div className="max-w-full w-[1700px] px-2 sm:px-6 lg:px-8 flex justify-between items-center h-20 mx-auto">
         {/* Logo */}
         <a href="/" aria-label="Inicio">
@@ -61,7 +61,7 @@ const AppHeader = () => {
               className={`rounded-md px-4 py-3 text-lg font-light ${
                 selected === item.name
                   ? "bg-base text-white"
-                  : "text-custom-gray hover:bg-base hover:text-white"
+                  : "text-custom-gray dark:text-gray-300 hover:bg-base hover:text-white"
               }`}
             >
               {item.name}
@@ -75,7 +75,7 @@ const AppHeader = () => {
               className={`rounded-md px-4 py-3 text-lg font-light ${
                 selected === item.name
                   ? "bg-base text-white"
-                  : "text-custom-gray hover:bg-base hover:text-white"
+                  : "text-custom-gray dark:text-gray-300 hover:bg-base hover:text-white"
               }`}
             >
               {item.name}
@@ -102,7 +102,7 @@ const AppHeader = () => {
 
       {/* Menú móvil */}
       {menuOpen && (
-        <div className="sm:hidden">
+        <div className="sm:hidden bg-white dark:bg-gray-800">
           <div className="space-y-1 px-2 pb-3 pt-2">
             {internalNavigation.map((item) => (
             <button
@@ -111,7 +111,7 @@ const AppHeader = () => {
                 className={`block w-full text-left rounded-md px-4 py-3 text-lg font-light ${
                   selected === item.name
                     ? "bg-base text-white"
-                    : "text-custom-gray hover:bg-base hover:text-white"
+                    : "text-custom-gray dark:text-gray-300 hover:bg-base hover:text-white"
                 }`}
               >
                 {item.name}

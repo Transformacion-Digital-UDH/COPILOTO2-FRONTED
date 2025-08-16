@@ -1,5 +1,5 @@
 import React from "react";
-import { useButtonState } from "../hooks/useButtonState.js";
+import { useButtonState } from "../hooks/useButtonState";
 
 const ButtonObserve = ({ estado, label, onClick }) => {
   // Usar el hook compartido
@@ -17,7 +17,7 @@ const ButtonObserve = ({ estado, label, onClick }) => {
     <button
       onClick={observarTramite}
       disabled={isDisabled}
-      className={`px-3 py-1 text-sm text-white bg-orange-500 hover:bg-orange-600 rounded-md hover:rounded-xl focus:outline-none transition-all duration-200 ${
+      className={`px-3 py-1 text-sm text-white bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 rounded-md hover:rounded-xl focus:outline-none transition-all duration-200 ${
         isDisabled ? "cursor-not-allowed opacity-50" : ""
       }`}
     >

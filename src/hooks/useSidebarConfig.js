@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { sidebarConfig } from '../config/sidebar-config';
 
 export const useSidebarConfig = (role) => {
@@ -10,30 +10,30 @@ export const useSidebarConfig = (role) => {
   }, [role]);
 
   // Función para alternar sección
-  const toggleSection = (sectionName) => {
+  const toggleSection = useCallback((sectionName) => {
     setOpenSections(prev => ({
       ...prev,
       [sectionName]: !prev[sectionName]
     }));
-  };
+  }, []);
 
   // Verificar si una sección está abierta
-  const isSectionOpen = (sectionName) => {
+  const isSectionOpen = useCallback((sectionName) => {
     return openSections[sectionName] || false;
-  };
+  }, [openSections]);
 
   // Verificar si un submenú está activo
-  const isSubmenuActive = (path, currentPath) => {
+  const isSubmenuActive = useCallback((path, currentPath) => {
     return currentPath === path;
-  };
+  }, []);
 
   // Verificar si una sección está activa (tiene submenús activos)
-  const isSectionActive = (section, currentPath) => {
+  const isSectionActive = useCallback((section, currentPath) => {
     return section.submenus.some(submenu => isSubmenuActive(submenu.path, currentPath));
-  };
+  }, [isSubmenuActive]);
 
   // Abrir sección si tiene submenús activos
-  const openActiveSections = (currentPath) => {
+  const openActiveSections = useCallback((currentPath) => {
     const newOpenSections = {};
     sections.forEach(section => {
       if (isSectionActive(section, currentPath)) {
@@ -41,7 +41,7 @@ export const useSidebarConfig = (role) => {
       }
     });
     setOpenSections(prev => ({ ...prev, ...newOpenSections }));
-  };
+  }, [sections, isSectionActive]);
 
   return {
     sections,

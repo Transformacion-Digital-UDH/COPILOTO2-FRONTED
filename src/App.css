@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+/* Configuración del modo oscuro para Tailwind CSS v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import "./styles/themes.css";
+
+/* Configuración base para transiciones suaves */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

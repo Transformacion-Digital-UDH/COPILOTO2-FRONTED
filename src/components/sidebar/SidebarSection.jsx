@@ -43,11 +43,12 @@ const SidebarSectionComponent = ({
         className={`
           flex w-full items-center px-[9px] py-2 mt-4 cursor-pointer 
           rounded-md group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
-          ${isActive ? 'bg-gray-100 dark:bg-gray-700 text-white' : 'text-green-700'}
+          ${isActive ? 'bg-gray-100 dark:bg-gray-700' : ''}
+          text-green-700 dark:text-green-400
         `}
       >
-        <section.icon className="w-8 h-8 transition-transform transform group-hover:translate-x-2 duration-300" />
-        <span className="mx-4 text-left font-semibold text-black dark:text-white transition-transform transform group-hover:translate-x-2 duration-300">
+        <section.icon className="w-8 h-8 transition-transform transform group-hover:translate-x-2 duration-300 text-green-700 dark:text-green-400" />
+        <span className="mx-4 text-left font-semibold text-gray-900 dark:text-white transition-transform transform group-hover:translate-x-2 duration-300">
           {section.label}
         </span>
         <ChevronDown 
@@ -89,7 +90,7 @@ const SidebarSectionComponent = ({
                   
                   {/* Etiqueta "Jurado" */}
                   {role === 'asesor' && submenu.name.includes('jurado') && (
-                    <span className="ml-2 text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-1 rounded-md">
+                    <span className="ml-2 text-xs font-bold text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-800 px-2 py-1 rounded-md">
                       Jurado
                     </span>
                   )}
