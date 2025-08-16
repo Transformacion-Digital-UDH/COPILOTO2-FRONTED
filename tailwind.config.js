@@ -20,7 +20,10 @@ export default {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
-        }
+        },
+        // Colores personalizados del proyecto
+        'base': '#10b981', // Verde principal
+        'azul': '#2563eb', // Azul principal
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
