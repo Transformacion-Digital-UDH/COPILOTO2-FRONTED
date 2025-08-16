@@ -6,20 +6,20 @@ const Estado = ({ estado }) => {
   const getEstadoClase = () => {
     switch (estadoLowerCase) {
       case "rechazado":
-        return "bg-red-500 text-white";
+        return "bg-red-500 dark:bg-red-600 text-white";
       case "pendiente":
-        return "bg-gray-400 text-white";
+        return "bg-gray-400 dark:bg-gray-500 text-white";
       case "aceptado":
       case "tramitado":
       case "aprobado":
       case "emitido":
         return "bg-green-500 text-white dark:bg-green-600";
       case "observado":
-        return "bg-orange-400 text-white";
+        return "bg-orange-400 dark:bg-orange-500 text-white";
       case "en_progreso":
-        return "bg-gray-400 text-white";
+        return "bg-gray-400 dark:bg-gray-500 text-white";
       default:
-        return "bg-gray-400 text-white";
+        return "bg-gray-400 dark:bg-gray-500 text-white";
     }
   };
 

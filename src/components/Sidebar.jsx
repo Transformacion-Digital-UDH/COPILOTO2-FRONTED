@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useSidebarConfig } from '../hooks/useSidebarConfig.js';
-import UserProfile from './sidebar/UserProfile.jsx';
-import SidebarSection from './sidebar/SidebarSection.jsx';
+import { useSidebarConfig } from '../hooks/useSidebarConfig';
+import UserProfile from './sidebar/UserProfile';
+import SidebarSection from './sidebar/SidebarSection';
 
 const Sidebar = ({
   isOpen,
@@ -40,7 +40,7 @@ const Sidebar = ({
   };
 
   return (
-    <div className="flex bg-white dark:bg-gray-800">
+    <>
       {/* Backdrop solo para móviles */}
       {isOpen && (
         <div 
@@ -51,25 +51,27 @@ const Sidebar = ({
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-30 w-64 transition-all duration-500 overflow-y-auto
-        ${isOpen ? 'translate-x-0 lg:overflow-y-auto' : '-translate-x-full overflow-y-hidden'}
-        lg:relative ${isOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full lg:w-0 lg:overflow-y-hidden'}
-        ${isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'}
+        fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto
+        ${isOpen ? 'translate-x-0 sidebar-expand' : '-translate-x-full lg:w-0 sidebar-collapse'}
+        transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
       `}>
         
-        {/* Perfil del usuario */}
-        <UserProfile
-          fullName={fullName}
-          role={role}
-          imageProfile={imageProfile}
-          isOpen={isOpen}
-        />
+        {/* Perfil del usuario - con padding mínimo para el header */}
+        <div className="pt-6">
+          <UserProfile
+            fullName={fullName}
+            role={role}
+            imageProfile={imageProfile}
+            isOpen={isOpen}
+          />
+        </div>
 
         {/* Navegación */}
         <nav className={`
-          mt-5 mb-10 mx-1 transition-opacity duration-300
+          mt-5 mb-10 mx-1 transition-opacity
           ${isOpen ? 'opacity-100' : 'opacity-0'}
-        `}>
+        `}
+        style={{ transitionDuration: 'var(--sidebar-content-duration)' }}>
           {sections.map((section, index) => (
             <SidebarSection
               key={section.name}
@@ -87,7 +89,7 @@ const Sidebar = ({
           ))}
         </nav>
       </div>
-    </div>
+    </>
   );
 };
 

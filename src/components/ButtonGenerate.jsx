@@ -1,5 +1,5 @@
 import React from "react";
-import { useButtonState } from "../hooks/useButtonState.js";
+import { useButtonState } from "../hooks/useButtonState";
 
 const ButtonGenerate = ({ estado, label, onClick }) => {
   // Usar el hook compartido
