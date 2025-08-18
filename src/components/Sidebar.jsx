@@ -41,23 +41,15 @@ const Sidebar = ({
 
   return (
     <>
-      {/* Backdrop solo para móviles */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto
-        ${isOpen ? 'translate-x-0 sidebar-expand' : '-translate-x-full lg:w-0 sidebar-collapse'}
-        transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+        fixed inset-y-0 left-0 w-64 overflow-y-auto z-50
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:w-0'}
+        transition-all duration-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
       `}>
         
-        {/* Perfil del usuario - con padding mínimo para el header */}
-        <div className="pt-6">
+        {/* Perfil del usuario - padding ajustado para superposición en móviles */}
+        <div className="pt-6 lg:pt-6">
           <UserProfile
             fullName={fullName}
             role={role}

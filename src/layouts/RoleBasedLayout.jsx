@@ -58,7 +58,7 @@ const RoleBasedLayout = ({
       layout-transition transition-all
       ${fullHeight ? 'min-h-[calc(100vh-80px)]' : 'min-h-full'}
       ${showSidebar && isOpen ? 'lg:ml-64' : 'lg:ml-0'}
-      relative z-10
+      relative z-10 pt-20 lg:pt-0
       ${contentClass}
     `;
     return baseClasses.trim();
@@ -68,12 +68,50 @@ const RoleBasedLayout = ({
     return `
       header-transition transition-all relative z-40
       ${showSidebar && isOpen ? 'lg:ml-64' : 'lg:ml-0'}
+      fixed top-0 left-0 right-0 lg:relative lg:top-auto lg:left-auto lg:right-auto
     `.trim();
   };
 
   return (
     <div className={getLayoutClasses()}>
-      {/* Sidebar - Solo se renderiza si está habilitado */}
+      {/* Backdrop simple con Tailwind puro - solo en móviles cuando sidebar abierto */}
+      {showSidebar && isOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/60 z-40"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Botón hamburguesa */}
+      {showSidebar && (
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className={`
+            fixed z-[60] p-2 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none size-10
+            ${isOpen 
+              ? 'top-6 left-4 bg-slate-600/80 hover:bg-slate-500/80 text-white backdrop-blur-sm dark:bg-slate-700/90 dark:hover:bg-slate-600/90' 
+              : 'top-6 left-4 bg-white/90 hover:bg-white text-gray-700 shadow-lg backdrop-blur-sm dark:bg-gray-800/90 dark:hover:bg-gray-700/90 dark:text-white dark:shadow-gray-900/50'
+            }
+            lg:${isOpen ? 'left-[15rem]' : 'left-8'}
+            event-theme:${isOpen 
+              ? 'bg-gradient-to-r from-purple-600/80 to-blue-600/80 hover:from-purple-500/80 hover:to-blue-500/80' 
+              : 'bg-gradient-to-r from-gray-800/90 to-gray-900/90 hover:from-gray-700/90 hover:to-gray-800/90'
+            }
+          `}
+        >
+          {!isOpen ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          )}
+        </button>
+      )}
+      
+      {/* Sidebar */}
       {showSidebar && (
         <Sidebar
           isOpen={isOpen}
@@ -86,9 +124,9 @@ const RoleBasedLayout = ({
         />
       )}
       
-      {/* Header - Solo se renderiza si está habilitado */}
+      {/* Header - opaco en móviles cuando sidebar está abierto */}
       {showHeader && (
-        <div className={getHeaderClasses()}>
+        <div className={`${getHeaderClasses()} z-20 transition-opacity duration-300 ${isOpen ? 'lg:opacity-100 opacity-30' : 'opacity-100'}`}>
           <DashboardHeader />
         </div>
       )}
@@ -100,7 +138,7 @@ const RoleBasedLayout = ({
         </div>
       </main>
 
-      {/* Footer - Solo se renderiza si está habilitado */}
+      {/* Footer */}
       {showFooter && (
         <footer className={`
           ${showSidebar && isOpen ? 'lg:ml-64' : 'lg:ml-0'}
