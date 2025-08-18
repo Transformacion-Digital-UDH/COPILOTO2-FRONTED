@@ -47,7 +47,7 @@ const RoleBasedLayout = ({
   const getLayoutClasses = () => {
     const baseClasses = `
       ${fullHeight ? 'min-h-screen' : 'min-h-full'}
-      bg-gray-50 dark:bg-gray-900 relative
+      bg-gray-100 dark:bg-gray-900 relative
       ${containerClass}
     `;
     return baseClasses.trim();
