@@ -110,3 +110,16 @@
   transition-duration: var(--button-toggle-duration);
   transition-timing-function: var(--ease-expand);
 }
+
+/* Mejoras para responsividad del sidebar y header */
+@media (max-width: 1023px) {
+  .sidebar-mobile-adjust {
+    padding-top: 5rem;
+  }
+  
+  .content-mobile-adjust {
+    padding-top: 5rem;
+  }
+}
+
+/* Solo mantener las clases CSS esenciales para transiciones */
