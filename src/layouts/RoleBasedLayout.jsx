@@ -89,7 +89,7 @@ const RoleBasedLayout = ({
           className={`
             fixed z-[60] p-2 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none size-10
             ${isOpen 
-              ? 'top-6 left-4 bg-slate-600/80 hover:bg-slate-500/80 text-white backdrop-blur-sm dark:bg-slate-700/90 dark:hover:bg-slate-600/90' 
+              ? 'top-6 left-58 bg-slate-600/80 hover:bg-slate-500/80 text-white backdrop-blur-sm dark:bg-slate-700/90 dark:hover:bg-slate-600/90' 
               : 'top-6 left-4 bg-white/90 hover:bg-white text-gray-700 shadow-lg backdrop-blur-sm dark:bg-gray-800/90 dark:hover:bg-gray-700/90 dark:text-white dark:shadow-gray-900/50'
             }
             lg:${isOpen ? 'left-[15rem]' : 'left-8'}
