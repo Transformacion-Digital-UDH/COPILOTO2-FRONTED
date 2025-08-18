@@ -23,7 +23,7 @@ export const useAprobacionPlan = () => {
           asesores: [
             {
               id: 1,
-              estado: 'APROBADO',
+              estado: 'aprobado', // Cambiado para usar el componente Estado
               tipo: 'Técnico',
               nombre: 'Freddy Vigilio Arratea',
               revision: 1,
@@ -31,7 +31,7 @@ export const useAprobacionPlan = () => {
             },
             {
               id: 2,
-              estado: 'PENDIENTE',
+              estado: 'pendiente', // Cambiado para usar el componente Estado
               tipo: 'Metodológico',
               nombre: 'Aldo Ramirez Chaupis',
               revision: 2,
@@ -41,7 +41,7 @@ export const useAprobacionPlan = () => {
           jurados: [
             {
               id: 1,
-              estado: 'NO INICIADO',
+              estado: 'pendiente', // Cambiado de "NO INICIADO" a "pendiente"
               tipo: 'Objetante',
               nombre: 'Freddy Vigilio Arratea',
               revision: 1,

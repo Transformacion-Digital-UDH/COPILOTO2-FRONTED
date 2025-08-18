@@ -1,5 +1,7 @@
 import React from 'react';
 import { DataTableContainer } from '../../../components/containers';
+import Estado from '../../../components/Estado';
+import ButtonRevision from '../../../components/ButtonRevision';
 
 /**
  * Componente de tabla reutilizable para mostrar aprobaciones
@@ -16,26 +18,12 @@ const AprobacionTable = ({
   onAction, 
   className = '' 
 }) => {
-  
-  const getEstadoBadge = (estado) => {
-    const estilos = {
-      'APROBADO': 'bg-green-600 text-white px-3 py-1 rounded-full text-xs',
-      'PENDIENTE': 'bg-orange-500 text-white px-3 py-1 rounded-full text-xs',
-      'NO INICIADO': 'bg-gray-500 text-white px-3 py-1 rounded-full text-xs'
-    };
-    
-    return (
-      <span className={estilos[estado] || 'bg-gray-500 text-white px-3 py-1 rounded-full text-xs'}>
-        {estado}
-      </span>
-    );
-  };
 
-  const getActionButtonStyle = (estado) => {
-    if (estado === 'NO INICIADO') {
-      return 'bg-gray-500 hover:bg-gray-600';
+  const getButtonVariant = (estado) => {
+    if (estado === 'pendiente' && estado !== 'aprobado') {
+      return 'secondary';
     }
-    return 'bg-blue-600 hover:bg-blue-700';
+    return 'primary';
   };
 
   return (
@@ -68,7 +56,7 @@ const AprobacionTable = ({
             data.map((item) => (
               <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-4 py-4 whitespace-nowrap">
-                  {getEstadoBadge(item.estado)}
+                  <Estado estado={item.estado} />
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                   {item.tipo}
@@ -85,12 +73,10 @@ const AprobacionTable = ({
                   {item.fechaEnvio}
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-center">
-                  <button
+                  <ButtonRevision
                     onClick={() => onAction && onAction(item)}
-                    className={`${getActionButtonStyle(item.estado)} text-white px-4 py-2 rounded text-sm font-medium transition-colors`}
-                  >
-                    Solicitar revisión
-                  </button>
+                    variant={getButtonVariant(item.estado)}
+                  />
                 </td>
               </tr>
             ))
