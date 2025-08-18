@@ -1,15 +1,10 @@
 import React from 'react';
 import GoogleLoginButton from './GoogleLoginButton';
 import LoginForm from './LoginForm';
-import ThemeToggle from '../../../components/ThemeToggle';
 
 const AuthFormContainer = () => {
   return (
     <div className="w-full max-w-md rounded-lg px-8 py-6 self-center mx-auto shadow-lg dark:bg-gray-800/95 relative">
-      {/* Theme Toggle - Posicionado en esquina superior derecha */}
-      <div className="absolute -top-2 -right-2 z-10">
-        <ThemeToggle variant="toggle" />
-      </div>
       
       <div className="text-center mb-5 relative">
         <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-base opacity-70 rounded-tl-lg"></div>

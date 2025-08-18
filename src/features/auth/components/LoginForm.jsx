@@ -19,27 +19,13 @@ const LoginForm = () => {
   } = useAuthForm();
 
   return (
-    <>
-      <style jsx>{`
-        input[type="password"]::-ms-reveal,
-        input[type="password"]::-ms-clear {
-          display: none;
-        }
-        input[type="password"]::-webkit-credentials-auto-fill-button {
-          display: none !important;
-        }
-        input[type="password"]::-webkit-strong-password-auto-fill-button {
-          display: none !important;
-        }
-      `}</style>
-      
-      <form onSubmit={handleLogin}>
-        <div className="mb-4">
-          <label 
-            className="block text-sm font-Poppins text-gray-700 dark:text-gray-300 mb-1" 
-            htmlFor="email"
-          >
-            Correo electrónico
+    <form onSubmit={handleLogin}>
+      <div className="mb-4">
+        <label 
+          className="block text-sm font-Poppins text-gray-700 dark:text-gray-300 mb-1" 
+          htmlFor="email"
+        >
+          Correo electrónico
           </label>
           <input
             type="email"
@@ -110,7 +96,6 @@ const LoginForm = () => {
           </button>
         </div>
       </form>
-    </>
   );
 };
 

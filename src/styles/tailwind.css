@@ -36,3 +36,15 @@
   --background: 3 7 18;
   --foreground: 248 250 252;
 }
+
+/* Ocultar botones de revelación de contraseña del navegador */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
+input[type="password"]::-webkit-strong-password-auto-fill-button {
+  display: none !important;
+}
