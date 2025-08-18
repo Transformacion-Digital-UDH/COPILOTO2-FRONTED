@@ -1,10 +1,11 @@
 import React from 'react';
 import { CardContainer } from '../../../components/containers';
 import SolicitudAsesorForm from '../components/SolicitudAsesorForm';
+import AprobacionPlanForm from '../components/AprobacionPlanForm';
 
 /**
- * Página para solicitar asesor técnico - Tesista
- * Replica exactamente la imagen proporcionada
+ * Página para solicitar asesor técnico y ver aprobación del plan - Tesista
+ * Replica exactamente la imagen proporcionada con componentes separados
  */
 const SolicitudAsesorPage = () => {
   const handleFormSubmit = (formData) => {
@@ -19,10 +20,10 @@ const SolicitudAsesorPage = () => {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full min-h-full space-y-8 p-6">
+      {/* Primera sección - Formulario de solicitud */}
       <CardContainer className="w-full">
-        {/* Título dentro del contenedor */}
-        <div className="mb-8 text-center">
+        <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
             1/2. Solicitar Asesor Técnico
           </h1>
@@ -32,6 +33,17 @@ const SolicitudAsesorPage = () => {
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
         />
+      </CardContainer>
+
+      {/* Segunda sección - Aprobación de Plan de tesis */}
+      <CardContainer className="w-full">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+            2/2. Aprobación de Plan de tesis
+          </h1>
+          
+          <AprobacionPlanForm />
+        </div>
       </CardContainer>
     </div>
   );
