@@ -63,11 +63,11 @@ const SidebarSectionComponent = ({
         overflow-hidden transition-all duration-700 ease-out origin-top
         ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
       `}>
-        <ul className="pl-5 mt-2 mx-1">
+        <ul className="pl-5 mt-2 mx-1 text-left">
           {section.submenus.map((submenu, smIndex) => (
             <li
               key={submenu.name}
-              className="flex items-center mb-2 transition-all duration-500"
+              className="flex items-start mb-2 transition-all duration-500 text-left"
               style={{ 
                 transitionDelay: isOpen ? `${smIndex * 0.08}s` : '0s',
                 opacity: isOpen ? 1 : 0,
@@ -77,7 +77,7 @@ const SidebarSectionComponent = ({
               <button
                 onClick={() => handleSubmenuClick(submenu)}
                 className={`
-                  flex items-center justify-between w-full px-3 py-2 text-sm 
+                  flex items-center justify-start w-full px-3 py-2 text-sm text-left
                   transition duration-200 rounded-md gap-1 cursor-pointer
                   ${isSubmenuActive(submenu)
                     ? 'bg-blue-600 text-white dark:bg-blue-700 font-medium' 
@@ -85,8 +85,8 @@ const SidebarSectionComponent = ({
                   }
                 `}
               >
-                <div className="flex items-center">
-                  <span>{submenu.label}</span>
+                <div className="flex items-center flex-1 justify-start text-left">
+                  <span className="text-left">{submenu.label}</span>
                   
                   {/* Etiqueta "Jurado" */}
                   {role === 'asesor' && submenu.name.includes('jurado') && (
@@ -98,7 +98,7 @@ const SidebarSectionComponent = ({
 
                 {/* Contador de pendientes */}
                 {submenu.namecount && counts[submenu.namecount] > 0 && (
-                  <span className="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold">
+                  <span className="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold ml-auto">
                     {counts[submenu.namecount]}
                   </span>
                 )}

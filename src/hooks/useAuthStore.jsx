@@ -11,14 +11,14 @@ export const useAuthStore = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({ fullName: 'Usuario Tesista' });
-  const [role, setRole] = useState('tesista'); // Valor por defecto cambiado a tesista
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Para demo, directamente loggeado
+  const [user, setUser] = useState(null); // Iniciar sin usuario
+  const [role, setRole] = useState(null); // Sin rol por defecto para mostrar todos los enlaces
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // No autenticado por defecto
   const [loading, setLoading] = useState(false);
   
   const login = (userData) => {
     setUser(userData);
-    setRole(userData.role || 'tesista');
+    setRole(userData.role || null); // No forzar rol si no viene
     setIsAuthenticated(true);
   };
 
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       const mockUser = {
         fullName: 'Usuario Test',
         email: email,
-        role: 'tesista'
+        role: null // Sin rol específico para desarrollo
       };
       
       login(mockUser);
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       const mockUser = {
         fullName: 'Usuario Google',
         email: 'usuario@udh.edu.pe',
-        role: 'tesista',
+        role: null, // Sin rol específico para desarrollo
         googleId: 'mock_google_id'
       };
       
@@ -76,8 +76,19 @@ export const AuthProvider = ({ children }) => {
   
   const logout = () => {
     setUser(null);
-    setRole('tesista');
+    setRole(null); // Sin rol después del logout
     setIsAuthenticated(false);
+  };
+
+  // Función para cambiar de rol temporalmente (solo para desarrollo)
+  const changeRole = (newRole) => {
+    setRole(newRole);
+    if (user) {
+      setUser({
+        ...user,
+        role: newRole
+      });
+    }
   };
   
   return (
@@ -89,6 +100,7 @@ export const AuthProvider = ({ children }) => {
       login,
       logout,
       setRole,
+      changeRole, // Nueva función
       handleLogin,
       googleLogin
     }}>
