@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useSidebarConfig } from '../hooks/useSidebarConfig';
 import UserProfile from './sidebar/UserProfile';
 import SidebarSection from './sidebar/SidebarSection';
+import TesistaTimeline from '../features/tesista/components/TesistaTimeline';
+import RoleSelector from './sidebar/RoleSelector';
 
 const Sidebar = ({
   isOpen,
@@ -64,7 +66,16 @@ const Sidebar = ({
           ${isOpen ? 'opacity-100' : 'opacity-0'}
         `}
         style={{ transitionDuration: 'var(--sidebar-content-duration)' }}>
-          {sections.map((section, index) => (
+          {/* Mostrar línea de tiempo para tesista */}
+          {(role === 'tesista' || role === 'development') && (
+            <TesistaTimeline
+              currentPath={currentPath}
+              onNavigate={handleNavigate}
+            />
+          )}
+          
+          {/* Mostrar secciones normales solo para roles específicos (no tesista ni development) */}
+          {role !== 'tesista' && role !== 'development' && sections.map((section, index) => (
             <SidebarSection
               key={section.name}
               section={section}
@@ -79,7 +90,39 @@ const Sidebar = ({
               index={index}
             />
           ))}
+          
+          {/* En modo desarrollo, mostrar las secciones de otros roles (excluyendo tesista) */}
+          {role === 'development' && sections.filter(section => 
+            section.name !== 'ProyectoDeTesis' && 
+            section.name !== 'Ejecucion' && 
+            section.name !== 'InformeFinal' && 
+            section.name !== 'Sustentacion' && 
+            section.name !== 'Herramientas'
+          ).map((section, index) => (
+            <div key={`dev-${section.name}`} className="mt-8">
+              <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-t border-gray-200 dark:border-gray-600 pt-4">
+                {section.name.toUpperCase()} (DEMO)
+              </div>
+              <SidebarSection
+                section={section}
+                isOpen={isSectionOpen(section.name)}
+                isActive={isSectionActive(section, currentPath)}
+                onToggle={() => toggleSection(section.name)}
+                onNavigate={handleNavigate}
+                counts={counts}
+                currentPath={currentPath}
+                role={role}
+                sidebarOpen={isOpen}
+                index={index}
+              />
+            </div>
+          ))}
         </nav>
+
+        {/* Selector de roles para desarrollo - al final del sidebar */}
+        <div className="mt-auto">
+          <RoleSelector />
+        </div>
       </div>
     </>
   );

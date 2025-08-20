@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardHeader from '../components/DashboardHeader';
 import Sidebar from '../components/Sidebar';
 import AppFooter from '../components/AppFooter';
@@ -31,15 +32,19 @@ const RoleBasedLayout = ({
 }) => {
   const { isOpen, setIsOpen } = useSidebar();
   const { user, role } = useAuthStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Usar el rol directamente del store, 'development' solo como fallback para mostrar todos los roles
+  const currentRole = role || 'development';
 
   // Configuración de navegación por defecto
   const handleNavigate = (path) => {
     if (onNavigate) {
       onNavigate(path);
     } else {
-      // Navegación por defecto - usar router según implementación
-      console.log('Navigate to:', path);
-      // Aquí iría la lógica de navegación específica del router
+      // Navegación con React Router
+      navigate(path);
     }
   };
 
@@ -116,10 +121,10 @@ const RoleBasedLayout = ({
         <Sidebar
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          role={role}
-          fullName={user?.fullName || 'Usuario'}
+          role={currentRole}
+          fullName={user?.fullName || 'Usuario de Desarrollo'}
           imageProfile={user?.imageProfile || null}
-          currentPath={window.location.pathname}
+          currentPath={location.pathname}
           onNavigate={handleNavigate}
         />
       )}

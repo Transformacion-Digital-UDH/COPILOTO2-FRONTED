@@ -6,6 +6,32 @@ export const useSidebarConfig = (role) => {
 
   // Obtener configuración según el rol
   const sections = useMemo(() => {
+    // Si no hay rol definido o es desarrollo, mostrar todos los enlaces organizados por rol
+    if (!role || role === 'development') {
+      // Combinar todas las configuraciones de todos los roles
+      const allSections = [];
+
+      // Procesar cada rol y agregar sus secciones
+      Object.keys(sidebarConfig).forEach(roleKey => {
+        sidebarConfig[roleKey].forEach(section => {
+          allSections.push({
+            ...section,
+            name: `${roleKey}_${section.name}`, // ID único para evitar conflictos
+            label: `${section.label} (${roleKey.toUpperCase()})`, // Mostrar el rol en el label
+            originalRole: roleKey,
+            // Agregar identificador de rol a cada submenu
+            submenus: section.submenus.map(submenu => ({
+              ...submenu,
+              originalRole: roleKey
+            }))
+          });
+        });
+      });
+
+      return allSections;
+    }
+
+    // Si hay rol específico, usar solo ese rol
     return sidebarConfig[role] || [];
   }, [role]);
 
