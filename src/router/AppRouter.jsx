@@ -6,7 +6,8 @@ import DashboardPage from '../pages/DashboardPage';
 import ProfilePage from '../pages/ProfilePage';
 import { SolicitudAsesorPage } from '../features/tesista';
 import { DesignarAsesorPage, DesignarJuradoPage, SolicitarResolucionPage } from '../features/programa';
-import { AceptarAsesoriaPage, RevisionPlanTesisPage, RevisionPlanTecnicoPage, RevisionPlanMetodologicoPage, RevisionPlanJuradoPage } from '../features/asesor';
+import { AceptarAsesoriaPage, RevisionPlanTesisPage } from '../features/docente';
+import { RevisionPlanTecnicoPage, RevisionPlanMetodologicoPage, RevisionPlanJuradoPage } from '../features/docente';
 import { EmitirResolucionPage, EmitirResolucionJuradoPage, EmitirResolucionAprobacionPage } from '../features/facultad';
 
 const AppRouter = () => {
@@ -30,6 +31,7 @@ const AppRouter = () => {
           </ProvidersWrapper>
         } 
       />
+      
       {/* Rutas del tesista */}
       <Route 
         path="/tesista/solicitar-asesor" 
@@ -40,9 +42,9 @@ const AppRouter = () => {
         } 
       />
       
-      {/* Rutas del asesor */}
+      {/* Rutas del docente/asesor */}
       <Route 
-        path="/asesor/aceptar-asesoria" 
+        path="/docente/aceptar-asesoria" 
         element={
           <ProvidersWrapper>
             <AceptarAsesoriaPage />
@@ -50,7 +52,7 @@ const AppRouter = () => {
         } 
       />
       <Route 
-        path="/asesor/revision-plan-tesis" 
+        path="/docente/revision-plan-tesis" 
         element={
           <ProvidersWrapper>
             <RevisionPlanTesisPage />
@@ -58,7 +60,7 @@ const AppRouter = () => {
         } 
       />
       <Route 
-        path="/asesor/revision-plan-tecnico" 
+        path="/docente/revision-plan-tecnico" 
         element={
           <ProvidersWrapper>
             <RevisionPlanTecnicoPage />
@@ -66,7 +68,7 @@ const AppRouter = () => {
         } 
       />
       <Route 
-        path="/asesor/revision-plan-metodologico" 
+        path="/docente/revision-plan-metodologico" 
         element={
           <ProvidersWrapper>
             <RevisionPlanMetodologicoPage />
@@ -74,7 +76,7 @@ const AppRouter = () => {
         } 
       />
       <Route 
-        path="/asesor/revision-plan-jurado" 
+        path="/docente/revision-plan-jurado" 
         element={
           <ProvidersWrapper>
             <RevisionPlanJuradoPage />

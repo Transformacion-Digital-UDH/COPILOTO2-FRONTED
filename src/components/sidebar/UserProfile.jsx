@@ -23,10 +23,10 @@ const UserProfile = ({
         />
       </div>
       <div className="w-full text-center max-w-44">
-        <h2 className="text-xl font-semibold break-words mb-3 uppercase text-gray-900 dark:text-white">
+        <h2 className="text-xl font-semibold break-words mb-3 capitalize text-gray-900 dark:text-white">
           {fullName}
         </h2>
-        <p className="inline-flex items-center gap-2 text-xl font-medium text-[#48A6A7] dark:text-gray-200 border-b-4 border-[#EFB036] dark:border-yellow-400 pb-1 transition-all capitalize">
+        <p className="inline-flex items-center gap-2 text-xl font-medium text-[#48A6A7] dark:text-gray-200 border-b-4 border-[#EFB036] dark:border-yellow-400 pb-1 transition-all uppercase">
           {role || 'Desarrollo'}
         </p>
       </div>

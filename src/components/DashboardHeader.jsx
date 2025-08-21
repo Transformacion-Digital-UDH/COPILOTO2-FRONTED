@@ -13,12 +13,12 @@ const DashboardHeader = () => {
   const { isEvent } = useThemeStore();
 
   const shouldShowGuideButton = () => {
-    const allowedRoles = ['estudiante', 'programa', 'facultad', 'asesor', 'turnitin'];
+    const allowedRoles = ['estudiante', 'programa', 'facultad', 'docente', 'turnitin'];
     return allowedRoles.includes(role);
   };
 
   const shouldShowYoutubeButton = () => {
-    return role === 'asesor';
+    return role === 'docente';
   };
 
   const shouldShowChatBotButton = () => {

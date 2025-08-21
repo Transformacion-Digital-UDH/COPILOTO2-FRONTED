@@ -1,4 +1,4 @@
-// Exportar todas las páginas del feature asesor
+// Exportar todas las páginas del feature docente
 export { default as AceptarAsesoriaPage } from './pages/AceptarAsesoriaPage';
 export { default as RevisionPlanTesisPage } from './pages/RevisionPlanTesisPage';
 export { default as RevisionPlanTecnicoPage } from './pages/RevisionPlanTecnicoPage';
