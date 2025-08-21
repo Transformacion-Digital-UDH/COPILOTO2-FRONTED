@@ -4,12 +4,13 @@ import FormField from '../../../components/FormField';
 import Estado from '../../../components/Estado';
 import Button from '../../../components/Button';
 import ButtonRevision from '../../../components/ButtonRevision';
+import { FileText } from 'lucide-react';
 
 /**
- * Componente de tabla reutilizable para mostrar designaciones de asesores
- * Ahora incluye filtros integrados como AsesoriaTable
+ * Tabla para aceptación de asesoría
+ * Sigue el mismo patrón que DesignacionTable y JuradoTable
  */
-const DesignacionTable = ({ 
+const AsesoriaTable = ({ 
   data = [], 
   onAction, 
   loading = false,
@@ -17,25 +18,23 @@ const DesignacionTable = ({
   setBusqueda,
   filtroEstado = '',
   setFiltroEstado,
-  resetFiltros,
-  className = '' 
+  resetFiltros
 }) => {
-
-  const getBotonesAccion = (estudiante) => {
-    switch (estudiante.estado) {
+  const getBotonesAccion = (solicitud) => {
+    switch (solicitud.estado) {
       case 'aprobado':
         return (
           <div className="flex justify-center gap-2">
-            <Button 
-              variant="danger" 
+            <Button
+              variant="danger"
               size="sm"
-              onClick={() => onAction && onAction('rechazar', estudiante)}
+              onClick={() => onAction('rechazar', solicitud)}
             >
               Rechazar
             </Button>
-            <ButtonRevision 
+            <ButtonRevision
               size="sm"
-              onClick={() => onAction && onAction('solicitar', estudiante)}
+              onClick={() => onAction('solicitar', solicitud)}
             >
               Solicitar
             </ButtonRevision>
@@ -44,17 +43,17 @@ const DesignacionTable = ({
       case 'observado':
         return (
           <div className="flex justify-center gap-2">
-            <Button 
-              variant="danger" 
+            <Button
+              variant="danger"
               size="sm"
-              onClick={() => onAction && onAction('rechazar', estudiante)}
+              onClick={() => onAction('rechazar', solicitud)}
             >
               Rechazar
             </Button>
-            <Button 
-              variant="approve" 
+            <Button
+              variant="approve"
               size="sm"
-              onClick={() => onAction && onAction('aprobar', estudiante)}
+              onClick={() => onAction('aceptar', solicitud)}
             >
               Aprobar
             </Button>
@@ -63,17 +62,17 @@ const DesignacionTable = ({
       case 'pendiente':
         return (
           <div className="flex justify-center gap-2">
-            <Button 
-              variant="danger" 
+            <Button
+              variant="danger"
               size="sm"
-              onClick={() => onAction && onAction('rechazar', estudiante)}
+              onClick={() => onAction('rechazar', solicitud)}
             >
               Rechazar
             </Button>
-            <Button 
-              variant="approve" 
+            <Button
+              variant="approve"
               size="sm"
-              onClick={() => onAction && onAction('aprobar', estudiante)}
+              onClick={() => onAction('aceptar', solicitud)}
             >
               Aprobar
             </Button>
@@ -108,7 +107,6 @@ const DesignacionTable = ({
           </FormField>
         </FilterContainer>
       }
-      className={className}
     >
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -121,10 +119,10 @@ const DesignacionTable = ({
                 Tesista
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                A. Técnico
+                Tesis
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                A. Metodológico
+                Fecha
               </th>
               <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Acción
@@ -144,37 +142,31 @@ const DesignacionTable = ({
             ) : data.length === 0 ? (
               <tr>
                 <td colSpan="5" className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                  No se encontraron estudiantes con los filtros aplicados
+                  No se encontraron solicitudes con los filtros aplicados
                 </td>
               </tr>
             ) : (
-              data.map((estudiante) => (
+              data.map((solicitud) => (
                 <tr 
-                  key={estudiante.id} 
+                  key={solicitud.id} 
                   className="hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <td className="px-4 py-4 whitespace-nowrap">
-                    <Estado estado={estudiante.estado} />
+                    <Estado estado={solicitud.estado} />
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                    {estudiante.tesista}
+                    {solicitud.tesista}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                    {estudiante.asesor_tecnico || (
-                      <select className="text-sm border rounded px-2 py-1 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 w-full">
-                        <option value="">Seleccionar...</option>
-                      </select>
-                    )}
-                  </td>
-                  <td className="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
-                    {estudiante.asesor_metodologico || (
-                      <select className="text-sm border rounded px-2 py-1 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 w-full">
-                        <option value="">Seleccionar...</option>
-                      </select>
-                    )}
+                    {solicitud.fechaSolicitud}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-center">
-                    {getBotonesAccion(estudiante)}
+                    {getBotonesAccion(solicitud)}
                   </td>
                 </tr>
               ))
@@ -186,4 +178,4 @@ const DesignacionTable = ({
   );
 };
 
-export default DesignacionTable;
+export default AsesoriaTable;

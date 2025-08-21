@@ -102,6 +102,11 @@ const DesignarAsesorPage = () => {
           data={estudiantesFiltrados}
           onAction={handleAction}
           loading={loading}
+          busqueda={busqueda}
+          setBusqueda={setBusqueda}
+          filtroEstado={filtroEstado}
+          setFiltroEstado={setFiltroEstado}
+          resetFiltros={resetFiltros}
         />
       </CardContainer>
     </div>

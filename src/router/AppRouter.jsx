@@ -5,6 +5,7 @@ import ProvidersWrapper from '../components/ProvidersWrapper';
 import DashboardPage from '../pages/DashboardPage';
 import { SolicitudAsesorPage } from '../features/tesista';
 import { DesignarAsesorPage, DesignarJuradoPage, SolicitarResolucionPage } from '../features/programa';
+import { AceptarAsesoriaPage, RevisionPlanTesisPage } from '../features/asesor';
 
 const AppRouter = () => {
   return (
@@ -25,6 +26,24 @@ const AppRouter = () => {
         element={
           <ProvidersWrapper>
             <SolicitudAsesorPage />
+          </ProvidersWrapper>
+        } 
+      />
+      
+      {/* Rutas del asesor */}
+      <Route 
+        path="/asesor/aceptar-asesoria" 
+        element={
+          <ProvidersWrapper>
+            <AceptarAsesoriaPage />
+          </ProvidersWrapper>
+        } 
+      />
+      <Route 
+        path="/asesor/revision-plan-tesis" 
+        element={
+          <ProvidersWrapper>
+            <RevisionPlanTesisPage />
           </ProvidersWrapper>
         } 
       />
