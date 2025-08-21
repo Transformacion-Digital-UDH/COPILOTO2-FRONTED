@@ -64,33 +64,38 @@ export const sidebarConfig = {
   ],
 
   asesor: [
-    // {
-    //   name: 'ProyectoDeTesis',
-    //   label: 'Plan de Tesis',
-    //   icon: FileText,
-    //   submenus: [
-    //     { name: 'SolicitudesAsesoria', label: 'Pendientes de Aceptar Asesoría', path: '/asesor/solicitud-asesoria', namecount: 'pending_solicitudes' },
-    //     { name: 'SolicitudesRevision', label: 'Revisión de Plan de Tesis', path: '/asesor/solicitud-revision', namecount: 'pending_reviews_thesis' },
-    //     { name: 'revision jurado proyecto', label: 'Revisión Jurado Plan de Tesis', path: '/asesor/revision-jurado', namecount: 'pending_reviews_thesis_jury' }
-    //   ]
-    // },
-    // {
-    //   name: 'InformeFinal',
-    //   label: 'Informe Final de Tesis',
-    //   icon: ClipboardList,
-    //   submenus: [
-    //     { name: 'Revisión informe', label: 'Revisión de Informe Final de Tesis', path: '/asesor/revision-informe', namecount: 'pending_reviews_informe' },
-    //     { name: 'revision jurado informe', label: 'Revisión Jurado Informe Final de Tesis', path: '/asesor/revisionJurado-informe', namecount: 'pending_reviews_informe_jury' }
-    //   ]
-    // },
-    // {
-    //   name: 'Sustentacion',
-    //   label: 'Sustentación',
-    //   icon: Presentation,
-    //   submenus: [
-    //     { name: 'revision jurado sustentacion', label: 'Revisión Jurado de Sustentación', path: '/asesor/revisionJurado-sustentacion', namecount: 'pending_reviews_sus_jury' }
-    //   ]
-    // }
+    {
+      name: 'PlanDeTesis',
+      label: 'Plan de Tesis',
+      icon: FileText,
+      submenus: [
+        {
+          name: 'AsesorTecnico',
+          label: 'Asesor Técnico',
+          isSubmenuGroup: true,
+          submenus: [
+            { name: 'AceptarAsesoria', label: 'Aceptar Asesoría', path: '/asesor/aceptar-asesoria' },
+            { name: 'RevisarPlanTecnico', label: 'Revisar Plan de Tesis', path: '/asesor/revision-plan-tesis' }
+          ]
+        },
+        {
+          name: 'AsesorMetodologico',
+          label: 'Asesor Metodológico',
+          isSubmenuGroup: true,
+          submenus: [
+            { name: 'RevisarPlanMetodologico', label: 'Revisar Plan de Tesis', path: '/asesor/revision-plan-tesis' }
+          ]
+        },
+        {
+          name: 'JuradoObjetante',
+          label: 'Jurado Objetante',
+          isSubmenuGroup: true,
+          submenus: [
+            { name: 'RevisarPlanJurado', label: 'Revisar Plan de Tesis', path: '/asesor/revision-plan-tesis' }
+          ]
+        }
+      ]
+    }
   ],
 
   programa: [
