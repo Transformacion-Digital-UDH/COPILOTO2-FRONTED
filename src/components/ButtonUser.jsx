@@ -1,9 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../hooks/useAuthStore';
 
 const ButtonUser = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuthStore();
+  const [canInstall, setCanInstall] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const { user, role, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  // Detectar si la app puede instalarse como PWA
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstall(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const installApp = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setCanInstall(false);
+        setDeferredPrompt(null);
+      }
+    }
+    setIsOpen(false);
+  };
+
+  const handleProfileClick = () => {
+    navigate('/perfil');
+    setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+  };
 
   return (
     <div className="relative">
@@ -19,22 +60,35 @@ const ButtonUser = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 z-50">
-          <div className="p-3 border-b dark:border-gray-700">
-            <p className="text-sm font-medium">{user?.fullName || 'Usuario'}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email || 'email@example.com'}</p>
-          </div>
-          <div className="p-1">
+        <div className="absolute right-0 top-16 z-50 w-32 sm:w-36 bg-white rounded-md shadow-xl font-medium dark:bg-gray-800 dark:border-gray-200/20 dark:border-[1px] p-1">
+          
+          {/* Perfil - Solo si no es rol 'vri' o 'turnitin' */}
+          {role !== 'vri' && role !== 'turnitin' && (
             <button
-              onClick={() => {
-                logout();
-                setIsOpen(false);
-              }}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+              onClick={handleProfileClick}
+              className="block w-full text-left px-3 py-1 sm:py-2 text-sm text-black dark:text-white hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white rounded-md"
             >
-              Cerrar sesión
+              Perfil
             </button>
-          </div>
+          )}
+          
+          {/* Instalar app - Solo si está disponible */}
+          {canInstall && (
+            <button
+              onClick={installApp}
+              className="block w-full text-left px-3 py-1 sm:py-2 text-sm text-black dark:text-white hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white rounded-md"
+            >
+              Instalar app
+            </button>
+          )}
+          
+          {/* Cerrar sesión */}
+          <button
+            onClick={handleLogout}
+            className="inline-flex w-full text-start px-3 py-1 sm:py-2 text-sm text-black dark:text-white hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white rounded-md"
+          >
+            Cerrar sesión
+          </button>
         </div>
       )}
     </div>

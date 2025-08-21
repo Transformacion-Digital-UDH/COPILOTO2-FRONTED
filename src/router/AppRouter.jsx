@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from '../features/auth/pages/LoginPage';
 import ProvidersWrapper from '../components/ProvidersWrapper';
 import DashboardPage from '../pages/DashboardPage';
+import ProfilePage from '../pages/ProfilePage';
 import { SolicitudAsesorPage } from '../features/tesista';
 import { DesignarAsesorPage, DesignarJuradoPage, SolicitarResolucionPage } from '../features/programa';
 import { AceptarAsesoriaPage, RevisionPlanTesisPage, RevisionPlanTecnicoPage, RevisionPlanMetodologicoPage, RevisionPlanJuradoPage } from '../features/asesor';
@@ -18,6 +19,14 @@ const AppRouter = () => {
         element={
           <ProvidersWrapper>
             <DashboardPage />
+          </ProvidersWrapper>
+        } 
+      />
+      <Route 
+        path="/perfil" 
+        element={
+          <ProvidersWrapper>
+            <ProfilePage />
           </ProvidersWrapper>
         } 
       />
