@@ -5,7 +5,7 @@ import ProvidersWrapper from '../components/ProvidersWrapper';
 import DashboardPage from '../pages/DashboardPage';
 import { SolicitudAsesorPage } from '../features/tesista';
 import { DesignarAsesorPage, DesignarJuradoPage, SolicitarResolucionPage } from '../features/programa';
-import { AceptarAsesoriaPage, RevisionPlanTesisPage } from '../features/asesor';
+import { AceptarAsesoriaPage, RevisionPlanTesisPage, RevisionPlanTecnicoPage, RevisionPlanMetodologicoPage, RevisionPlanJuradoPage } from '../features/asesor';
 import { EmitirResolucionPage, EmitirResolucionJuradoPage, EmitirResolucionAprobacionPage } from '../features/facultad';
 
 const AppRouter = () => {
@@ -45,6 +45,30 @@ const AppRouter = () => {
         element={
           <ProvidersWrapper>
             <RevisionPlanTesisPage />
+          </ProvidersWrapper>
+        } 
+      />
+      <Route 
+        path="/asesor/revision-plan-tecnico" 
+        element={
+          <ProvidersWrapper>
+            <RevisionPlanTecnicoPage />
+          </ProvidersWrapper>
+        } 
+      />
+      <Route 
+        path="/asesor/revision-plan-metodologico" 
+        element={
+          <ProvidersWrapper>
+            <RevisionPlanMetodologicoPage />
+          </ProvidersWrapper>
+        } 
+      />
+      <Route 
+        path="/asesor/revision-plan-jurado" 
+        element={
+          <ProvidersWrapper>
+            <RevisionPlanJuradoPage />
           </ProvidersWrapper>
         } 
       />

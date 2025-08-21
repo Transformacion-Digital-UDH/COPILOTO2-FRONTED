@@ -1,6 +1,9 @@
 // Exportar todas las páginas del feature asesor
 export { default as AceptarAsesoriaPage } from './pages/AceptarAsesoriaPage';
 export { default as RevisionPlanTesisPage } from './pages/RevisionPlanTesisPage';
+export { default as RevisionPlanTecnicoPage } from './pages/RevisionPlanTecnicoPage';
+export { default as RevisionPlanMetodologicoPage } from './pages/RevisionPlanMetodologicoPage';
+export { default as RevisionPlanJuradoPage } from './pages/RevisionPlanJuradoPage';
 
 // Exportar hooks
 export { useAsesoriaData } from './hooks/useAsesoriaData';
