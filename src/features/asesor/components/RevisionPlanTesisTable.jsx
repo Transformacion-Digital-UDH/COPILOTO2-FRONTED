@@ -17,57 +17,73 @@ const RevisionPlanTesisTable = ({
   setBusqueda, 
   filtroEstado, 
   setFiltroEstado, 
-  resetFiltros 
+  resetFiltros,
+  acciones = [],
+  tipoRevisor = 'tecnico'
 }) => {
-  // Función para obtener los botones de acción según el estado
+  // Función para obtener los botones de acción según el estado y tipo de revisor
   const getBotonesAccion = (plan) => {
+    if (acciones.length === 0) {
+      return <span className="text-gray-400">-</span>;
+    }
+
+    const getVariantClass = (accion) => {
+      if (accion.variant === 'primary') return 'variant="approve"';
+      if (accion.variant === 'outline') return 'variant="outline"';
+      return 'variant="default"';
+    };
+
     switch (plan.estado.toLowerCase()) {
       case 'aprobado':
-        return (
+        // Solo mostrar el botón de aprobar si está disponible
+        const accionAprobar = acciones.find(a => a.id === 'aprobar');
+        return accionAprobar ? (
           <div className="flex justify-center gap-2">
             <Button
               variant="approve"
               size="sm"
-              onClick={() => onAction('aprobar', plan)}
+              onClick={() => onAction(accionAprobar.id, plan)}
+              title={accionAprobar.label}
             >
-              Aprobar
+              {accionAprobar.icon} {accionAprobar.label}
             </Button>
           </div>
-        );
+        ) : <span className="text-gray-400">-</span>;
+
       case 'observado':
-        return (
-          <div className="flex justify-center gap-2">
-            <ButtonObserve
-              estado={plan.estado.toLowerCase()}
-              label="Observar"
-              onClick={() => onAction('observar', plan)}
-            />
-            <Button
-              variant="approve"
-              size="sm"
-              onClick={() => onAction('aprobar', plan)}
-            >
-              Aprobar
-            </Button>
-          </div>
-        );
+      case 'objetado':
       case 'pendiente':
         return (
           <div className="flex justify-center gap-2">
-            <ButtonObserve
-              estado={plan.estado.toLowerCase()}
-              label="Observar"
-              onClick={() => onAction('observar', plan)}
-            />
-            <Button
-              variant="approve"
-              size="sm"
-              onClick={() => onAction('aprobar', plan)}
-            >
-              Aprobar
-            </Button>
+            {acciones.map((accion) => {
+              if (accion.id === 'observar') {
+                return (
+                  <ButtonObserve
+                    key={accion.id}
+                    estado={plan.estado.toLowerCase()}
+                    label={accion.label}
+                    onClick={() => onAction(accion.id, plan)}
+                    title={accion.label}
+                  />
+                );
+              } else if (accion.id === 'aprobar') {
+                return (
+                  <Button
+                    key={accion.id}
+                    variant="approve"
+                    size="sm"
+                    onClick={() => onAction(accion.id, plan)}
+                    title={accion.label}
+                  >
+                    {accion.icon} {accion.label}
+                  </Button>
+                );
+              }
+              return null;
+            })}
           </div>
         );
+
       default:
         return <span className="text-gray-400">-</span>;
     }
