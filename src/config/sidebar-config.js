@@ -142,15 +142,17 @@ export const sidebarConfig = {
   ],
 
   facultad: [
-    // {
-    //   name: 'ProyectoDeTesis',
-    //   label: 'Plan de Tesis',
-    //   icon: FileText,
-    //   submenus: [
-    //     { name: 'Resolución designación asesor', label: 'Resolución Designación Asesor', path: '/facultad/resolucion-asesor', namecount: 'pending_res_asing_adviser' },
-    //     { name: 'Resolución Aprobación Plan de Tesis', label: 'Resolución Aprobación Plan de Tesis', path: '/facultad/resolucion-proyecto', namecount: 'pending_res_approve_thesis' }
-    //   ]
-    // },
+    {
+      name: 'ProyectoDeTesis',
+      label: 'Plan de Tesis',
+      icon: FileText,
+      submenus: [
+        { name: 'Emitir Resolución Asesor', label: 'Emitir Resolución de designación de Asesores', path: '/facultad/emitir-resolucion-asesor' },
+        { name: 'Emitir Resolución Jurado', label: 'Emitir Resolución de Designación de Jurado objetante', path: '/facultad/emitir-resolucion-jurado' },
+        { name: 'Emitir Resolución Aprobación', label: 'Emitir Resolución de aprobación de Plan de tesis', path: '/facultad/emitir-resolucion-aprobacion' },
+        // { name: 'Resolución Aprobación Plan de Tesis', label: 'Resolución Aprobación Plan de Tesis', path: '/facultad/resolucion-proyecto', namecount: 'pending_res_approve_thesis' }
+      ]
+    }
     // { ... resto comentado ... }
   ],
 

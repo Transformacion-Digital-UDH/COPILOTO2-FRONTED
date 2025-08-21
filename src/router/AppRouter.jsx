@@ -6,6 +6,7 @@ import DashboardPage from '../pages/DashboardPage';
 import { SolicitudAsesorPage } from '../features/tesista';
 import { DesignarAsesorPage, DesignarJuradoPage, SolicitarResolucionPage } from '../features/programa';
 import { AceptarAsesoriaPage, RevisionPlanTesisPage } from '../features/asesor';
+import { EmitirResolucionPage, EmitirResolucionJuradoPage, EmitirResolucionAprobacionPage } from '../features/facultad';
 
 const AppRouter = () => {
   return (
@@ -70,6 +71,32 @@ const AppRouter = () => {
         element={
           <ProvidersWrapper>
             <SolicitarResolucionPage />
+          </ProvidersWrapper>
+        } 
+      />
+      
+      {/* Rutas de facultad */}
+      <Route 
+        path="/facultad/emitir-resolucion-asesor" 
+        element={
+          <ProvidersWrapper>
+            <EmitirResolucionPage />
+          </ProvidersWrapper>
+        } 
+      />
+      <Route 
+        path="/facultad/emitir-resolucion-jurado" 
+        element={
+          <ProvidersWrapper>
+            <EmitirResolucionJuradoPage />
+          </ProvidersWrapper>
+        } 
+      />
+      <Route 
+        path="/facultad/emitir-resolucion-aprobacion" 
+        element={
+          <ProvidersWrapper>
+            <EmitirResolucionAprobacionPage />
           </ProvidersWrapper>
         } 
       />

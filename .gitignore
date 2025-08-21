@@ -54,3 +54,6 @@ build/
 *.njsproj
 *.sln
 *.sw?
+README_EmitirResolucion.md
+README_EmitirResolucionAprobacion.md
+README_EmitirResolucionJurado.md
