@@ -14,7 +14,7 @@ const RoleSelector = () => {
   const availableRoles = [
     { value: 'development', label: 'Desarrollo (Todos)' },
     { value: 'tesista', label: 'Tesista' },
-    { value: 'asesor', label: 'Asesor' },
+    { value: 'docente', label: 'Docente' },
     { value: 'programa', label: 'Programa Académico' },
     { value: 'facultad', label: 'Facultad' },
     { value: 'vri', label: 'VRI' },

@@ -63,7 +63,7 @@ export const sidebarConfig = {
     // }
   ],
 
-  asesor: [
+  docente: [
     {
       name: 'PlanDeTesis',
       label: 'Plan de Tesis',
@@ -74,8 +74,8 @@ export const sidebarConfig = {
           label: 'Asesor Técnico',
           isSubmenuGroup: true,
           submenus: [
-            { name: 'AceptarAsesoria', label: 'Aceptar Asesoría', path: '/asesor/aceptar-asesoria' },
-            { name: 'RevisarPlanTecnico', label: 'Revisar Plan de Tesis', path: '/asesor/revision-plan-tecnico' }
+            { name: 'AceptarAsesoria', label: 'Aceptar Asesoría', path: '/docente/aceptar-asesoria' },
+            { name: 'RevisarPlanTecnico', label: 'Revisar Plan de Tesis', path: '/docente/revision-plan-tecnico' }
           ]
         },
         {
@@ -83,7 +83,7 @@ export const sidebarConfig = {
           label: 'Asesor Metodológico',
           isSubmenuGroup: true,
           submenus: [
-            { name: 'RevisarPlanMetodologico', label: 'Revisar Plan de Tesis', path: '/asesor/revision-plan-metodologico' }
+            { name: 'RevisarPlanMetodologico', label: 'Revisar Plan de Tesis', path: '/docente/revision-plan-metodologico' }
           ]
         },
         {
@@ -91,7 +91,7 @@ export const sidebarConfig = {
           label: 'Jurado Objetante',
           isSubmenuGroup: true,
           submenus: [
-            { name: 'RevisarPlanJurado', label: 'Revisar Plan de Tesis', path: '/asesor/revision-plan-jurado' }
+            { name: 'RevisarPlanJurado', label: 'Revisar Plan de Tesis', path: '/docente/revision-plan-jurado' }
           ]
         }
       ]
