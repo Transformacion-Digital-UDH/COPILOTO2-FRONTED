@@ -50,25 +50,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Mock Google login (funcionalidad principal)
-  const googleLogin = async (response) => {
+  // Google login usando API real
+  const googleLogin = async (googleResponse) => {
     setLoading(true);
     try {
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Importar authAPI dinámicamente para evitar problemas de circular dependency
+      const { authAPI } = await import('../services/authAPI');
       
-      const mockUser = {
-        fullName: 'Usuario Google',
-        email: 'usuario@udh.edu.pe',
-        role: null, // Sin rol específico para desarrollo
-        googleId: 'mock_google_id'
-      };
+      // Enviar el token de Google a nuestro backend
+      const response = await authAPI.loginGoogle(googleResponse.credential || googleResponse.access_token);
       
-      login(mockUser);
-      console.log('Google login mock exitoso:', mockUser);
+      // Si el backend devuelve un token JWT y datos del usuario
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        
+        const userData = {
+          fullName: response.user.nombre || response.user.fullName,
+          email: response.user.email,
+          role: response.user.rol || response.user.role,
+          id: response.user.id,
+          imagen: response.user.imagen
+        };
+        
+        login(userData);
+        console.log('Google login exitoso:', userData);
+        
+        // Redirigir al dashboard
+        window.location.href = '/dashboard';
+      }
     } catch (error) {
-      console.error('Error en Google login mock:', error.message);
-      alert('Error al iniciar sesión con Google');
+      console.error('Error en Google login:', error);
+      const errorMessage = error.message || 'Error al iniciar sesión con Google';
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
