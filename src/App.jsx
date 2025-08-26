@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react'
-import AppRouter from './router/AppRouter'
-import './App.css'
-
-// Importar utilidad de debug en desarrollo
-if (import.meta.env.DEV) {
-  import('./utils/debugJWT.js');
-}
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './hooks/useAuthStore';
+import AuthInitializer from './components/AuthInitializer';
+import AppRouter from './router/AppRouter';
+import './App.css';
 
 function App() {
-  useEffect(() => {
-    // Solo en desarrollo - mostrar información de debug
-    if (import.meta.env.DEV) {
-      console.log('🚀 App iniciada en modo desarrollo');
-      console.log('📍 API URL:', import.meta.env.VITE_API_BASE_URL);
-      console.log('🔧 Para testing JWT, usa: window.debugJWT.setMockToken()');
-    }
-  }, []);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   return (
-    <AppRouter />
-  )
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <BrowserRouter>
+          <AuthInitializer>
+            <AppRouter />
+          </AuthInitializer>
+        </BrowserRouter>
+      </AuthProvider>
+    </GoogleOAuthProvider>
+  );
 }
 
-export default App
+export default App;

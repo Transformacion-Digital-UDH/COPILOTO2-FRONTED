@@ -58,6 +58,26 @@ export const authAPI = {
     } catch (error) {
       throw error.response?.data || { message: 'Error al obtener el perfil' };
     }
+  },
+
+  // Verificar token
+  verifyToken: async () => {
+    try {
+      const response = await api.get('/auth/verify-token');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Token inválido' };
+    }
+  },
+
+  // Refrescar token
+  refreshToken: async () => {
+    try {
+      const response = await api.post('/auth/refresh-token');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Error al refrescar token' };
+    }
   }
 };
 
