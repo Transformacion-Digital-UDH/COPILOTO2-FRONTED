@@ -107,6 +107,7 @@ const SolicitudAsesorForm = ({ onCancel, onSubmit }) => {
       />
 
       <FormField
+        key={`asesor-${asesores.length}`} // Forzar re-render cuando cambie el array
         label="Asesor técnico"
         type="select"
         value={formData.asesorTecnico}
@@ -119,6 +120,7 @@ const SolicitudAsesorForm = ({ onCancel, onSubmit }) => {
       />
 
       <FormField
+        key={`linea-${lineasInvestigacion.length}`} // Forzar re-render cuando cambie el array
         label="Línea de investigación"
         type="select"
         value={formData.lineaInvestigacion}

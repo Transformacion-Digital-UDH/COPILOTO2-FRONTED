@@ -2,20 +2,24 @@ import axios from 'axios';
 
 // Configuración base de Axios
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api',
-  timeout: 10000,
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
 });
 
 // Interceptor para agregar JWT token a las requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    // Obtener token de localStorage o sessionStorage
+    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
     return config;
   },
   (error) => {
@@ -29,15 +33,21 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Si el token es inválido, limpiar localStorage y redirigir al login
+    // Solo mostrar errores críticos
     if (error.response?.status === 401) {
+      // Limpiar datos de autenticación
       localStorage.removeItem('token');
+      localStorage.removeItem('authToken');
       localStorage.removeItem('user');
-      // Solo redirigir si no estamos en una ruta de auth
-      if (!window.location.pathname.includes('/auth')) {
-        window.location.href = '/';
+      localStorage.removeItem('userData');
+      
+      // Solo redirigir si no estamos en rutas de auth
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes('/login') && !currentPath.includes('/auth') && currentPath !== '/') {
+        window.location.href = '/login';
       }
     }
+
     return Promise.reject(error);
   }
 );
