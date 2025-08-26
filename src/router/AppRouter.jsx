@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from '../features/auth/pages/LoginPage';
 import ProvidersWrapper from '../components/ProvidersWrapper';
+import ProtectedRoute from '../components/ProtectedRoute';
 import DashboardPage from '../pages/DashboardPage';
 import ProfilePage from '../pages/ProfilePage';
 import { SolicitudAsesorPage } from '../features/tesista';
@@ -18,17 +19,21 @@ const AppRouter = () => {
       <Route 
         path="/dashboard" 
         element={
-          <ProvidersWrapper>
-            <DashboardPage />
-          </ProvidersWrapper>
+          <ProtectedRoute>
+            <ProvidersWrapper>
+              <DashboardPage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       <Route 
         path="/perfil" 
         element={
-          <ProvidersWrapper>
-            <ProfilePage />
-          </ProvidersWrapper>
+          <ProtectedRoute>
+            <ProvidersWrapper>
+              <ProfilePage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       
@@ -36,9 +41,11 @@ const AppRouter = () => {
       <Route 
         path="/tesista/solicitar-asesor" 
         element={
-          <ProvidersWrapper>
-            <SolicitudAsesorPage />
-          </ProvidersWrapper>
+          <ProtectedRoute requiredRole="estudiante">
+            <ProvidersWrapper>
+              <SolicitudAsesorPage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       
@@ -46,41 +53,51 @@ const AppRouter = () => {
       <Route 
         path="/docente/aceptar-asesoria" 
         element={
-          <ProvidersWrapper>
-            <AceptarAsesoriaPage />
-          </ProvidersWrapper>
+          <ProtectedRoute requiredRole="docente">
+            <ProvidersWrapper>
+              <AceptarAsesoriaPage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       <Route 
         path="/docente/revision-plan-tesis" 
         element={
-          <ProvidersWrapper>
-            <RevisionPlanTesisPage />
-          </ProvidersWrapper>
+          <ProtectedRoute requiredRole="docente">
+            <ProvidersWrapper>
+              <RevisionPlanTesisPage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       <Route 
         path="/docente/revision-plan-tecnico" 
         element={
-          <ProvidersWrapper>
-            <RevisionPlanTecnicoPage />
-          </ProvidersWrapper>
+          <ProtectedRoute requiredRole="docente">
+            <ProvidersWrapper>
+              <RevisionPlanTecnicoPage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       <Route 
         path="/docente/revision-plan-metodologico" 
         element={
-          <ProvidersWrapper>
-            <RevisionPlanMetodologicoPage />
-          </ProvidersWrapper>
+          <ProtectedRoute requiredRole="docente">
+            <ProvidersWrapper>
+              <RevisionPlanMetodologicoPage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       <Route 
         path="/docente/revision-plan-jurado" 
         element={
-          <ProvidersWrapper>
-            <RevisionPlanJuradoPage />
-          </ProvidersWrapper>
+          <ProtectedRoute requiredRole="docente">
+            <ProvidersWrapper>
+              <RevisionPlanJuradoPage />
+            </ProvidersWrapper>
+          </ProtectedRoute>
         } 
       />
       
