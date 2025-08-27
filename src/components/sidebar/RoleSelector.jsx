@@ -1,81 +1,61 @@
 import React, { useState } from 'react';
-import { ChevronDown, User } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../../hooks/useAuthStore';
 
 /**
- * Componente selector de roles para desarrollo
- * Permite cambiar entre diferentes roles para probar la funcionalidad
+ * Componente toggle para alternar entre vista normal y vista de desarrollo
  */
-const RoleSelector = () => {
-  const { role, changeRole } = useAuthStore();
-  const [isOpen, setIsOpen] = useState(false);
+const RoleSelector = ({ onToggleDevelopmentMode }) => {
+  const { role } = useAuthStore();
+  const [isDevelopmentMode, setIsDevelopmentMode] = useState(false);
 
-  // Lista de roles disponibles para testing
-  const availableRoles = [
-    { value: 'development', label: 'Desarrollo (Todos)' },
-    { value: 'tesista', label: 'Tesista' },
-    { value: 'docente', label: 'Docente' },
-    { value: 'programa', label: 'Programa Académico' },
-    { value: 'facultad', label: 'Facultad' },
-    { value: 'vri', label: 'VRI' },
-    { value: 'turnitin', label: 'Turnitin' },
-    { value: 'admin', label: 'Administrador' }
-  ];
-
-  const currentRoleLabel = availableRoles.find(r => r.value === (role || 'development'))?.label || 'Desarrollo (Todos)';
-
-  const handleRoleChange = (newRole) => {
-    changeRole(newRole === 'development' ? null : newRole);
-    setIsOpen(false);
+  const handleToggle = () => {
+    const newMode = !isDevelopmentMode;
+    setIsDevelopmentMode(newMode);
+    if (onToggleDevelopmentMode) {
+      onToggleDevelopmentMode(newMode);
+    }
   };
 
   return (
     <div className="mt-4 mb-2 mx-3">
       <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
         <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
-          MODO DESARROLLO
+          VISTA DE DESARROLLO
         </div>
         
-        <div className="relative">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="w-full flex items-center justify-between px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
-          >
-            <div className="flex items-center">
-              <User className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-300" />
-              <span className="text-gray-700 dark:text-gray-200 truncate">
-                {currentRoleLabel}
-              </span>
-            </div>
-            <ChevronDown 
-              className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-                isOpen ? 'rotate-180' : ''
-              }`}
-            />
-          </button>
-
-          {/* Dropdown */}
-          {isOpen && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
-              {availableRoles.map((roleOption) => (
-                <button
-                  key={roleOption.value}
-                  onClick={() => handleRoleChange(roleOption.value)}
-                  className={`w-full px-3 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                    (role || 'development') === roleOption.value 
-                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
-                      : 'text-gray-700 dark:text-gray-200'
-                  }`}
-                >
-                  {roleOption.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <button
+          onClick={handleToggle}
+          className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
+            isDevelopmentMode
+              ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-700'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+          }`}
+        >
+          <div className="flex items-center">
+            {isDevelopmentMode ? (
+              <Eye className="w-4 h-4 mr-2" />
+            ) : (
+              <EyeOff className="w-4 h-4 mr-2" />
+            )}
+            <span className="font-medium">
+              {isDevelopmentMode ? 'Vista Completa' : 'Vista Normal'}
+            </span>
+          </div>
+          <div className={`text-xs px-2 py-1 rounded-full ${
+            isDevelopmentMode 
+              ? 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
+              : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
+          }`}>
+            {isDevelopmentMode ? 'ON' : 'OFF'}
+          </div>
+        </button>
 
         <div className="text-xs text-gray-400 dark:text-gray-500 mt-2 text-center">
-          Cambiar vista de roles
+          {isDevelopmentMode 
+            ? 'Mostrando todos los roles' 
+            : role ? `Mostrando solo: ${role}` : 'Vista por rol'
+          }
         </div>
       </div>
     </div>
