@@ -66,18 +66,17 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.getUserProfile();
       
       if (response.success && response.profile) {
-        // Normalizar datos del usuario
+        // Normalizar datos del usuario según la estructura de la API
         const userData = {
           id: response.profile.usuario_id,
           fullName: `${response.profile.est_nombre} ${response.profile.est_apellido_paterno} ${response.profile.est_apellido_materno}`.trim(),
           email: response.email,
-          role: response.role,
+          role: response.role, // Roles de la API: admin, docente, estudiante, facultad, programa
           codigo: response.profile.est_codigo,
           dni: response.profile.est_dni,
           ciclo: response.profile.est_ciclo,
           programa: response.profile.program_id?.pa_nombre,
           facultad: response.profile.program_id?.facultad_id?.fa_nombre,
-          // Agregar más campos según necesites
         };
 
         // Actualizar estado
@@ -104,14 +103,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Función mejorada de login que solo guarda lo esencial
+  // Función para login directo (usado por Google login y otros métodos)
   const login = (userData, authToken = null) => {
     // Filtrar solo datos esenciales para el frontend
     const essentialUserData = {
       id: userData.id,
       fullName: userData.fullName || userData.nombre,
       email: userData.email,
-      role: userData.role || userData.rol,
+      role: userData.role || userData.rol, // Mapear roles de la API
       // Solo incluir campos adicionales si existen
       ...(userData.codigo && { codigo: userData.codigo }),
       ...(userData.dni && { dni: userData.dni }),
@@ -136,34 +135,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Mock login con email y password (para pruebas del formulario)
+  // Login con email y password
   const handleLogin = async (email, password) => {
     setLoading(true);
     try {
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Importar authAPI dinámicamente
+      const { authAPI } = await import('../services/authAPI');
+      const response = await authAPI.login(email, password);
       
-      // Mock validation - solo acepta emails que terminen en @udh.edu.pe
-      if (!email.endsWith('@udh.edu.pe')) {
-        throw new Error('El correo debe terminar en @udh.edu.pe');
+      if (response.success && response.token) {
+        // Guardar token
+        localStorage.setItem('token', response.token);
+        setToken(response.token);
+        
+        // Obtener datos del usuario desde /usuarios/me
+        await fetchUserData();
+      } else {
+        throw new Error(response.message || 'Credenciales inválidas');
       }
-      
-      const mockUser = {
-        fullName: 'Usuario Test',
-        email: email,
-        role: null // Sin rol específico para desarrollo
-      };
-      
-      login(mockUser);
     } catch (error) {
-      console.error('Error en login mock:', error.message);
-      alert(error.message);
+      console.error('Error en login:', error);
+      const errorMessage = error.message || 'Error al iniciar sesión';
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // Google login mejorado con enfoque híbrido
+  // Google login integrado con API
   const googleLogin = async (googleResponse) => {
     setLoading(true);
     try {
@@ -222,20 +221,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Función para cambiar de rol temporalmente (solo para desarrollo)
-  const changeRole = (newRole) => {
-    setRole(newRole);
-    if (user) {
-      const updatedUser = {
-        ...user,
-        role: newRole
-      };
-      setUser(updatedUser);
-      // Actualizar sessionStorage también
-      sessionStorage.setItem('userCache', JSON.stringify(updatedUser));
-    }
-  };
-
   // Efecto para refrescar datos en eventos importantes
   useEffect(() => {
     // Solo refrescar si hay token y no estamos cargando
@@ -274,8 +259,6 @@ export const AuthProvider = ({ children }) => {
       token,
       login,
       logout,
-      setRole,
-      changeRole,
       handleLogin,
       googleLogin,
       fetchUserData,
