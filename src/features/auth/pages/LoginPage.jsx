@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../../hooks/useAuthStore';
 import AuthImageSection from '../components/AuthImagenSection';
 import AuthFormContainer from '../components/AuthFormContainer';
 import ThemeToggle from '../../../components/ThemeToggle';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+
+  // Efecto para redirigir automáticamente si ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
   return (
     <div className="min-h-screen sm:flex-row flex flex-col sm:gap-0 gap-10 bg-white dark:bg-slate-900 relative">
       <AuthImageSection />

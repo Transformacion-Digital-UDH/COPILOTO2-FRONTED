@@ -1,17 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useGoogleAuth } from '../hooks/useGoogleAuth';
 
 const GoogleLoginButton = () => {
+  const navigate = useNavigate();
   const { isLoading, googleLogin } = useGoogleAuth();
 
   const handleSuccess = (credentialResponse) => {
-    console.log('Google Login Success:', credentialResponse);
-    googleLogin(credentialResponse);
+    googleLogin(credentialResponse, () => {
+      // Callback de éxito: navegar al dashboard
+      navigate('/dashboard', { replace: true });
+    });
   };
 
-  const handleError = () => {
-    console.log('Google Login Failed');
+  const handleError = (error) => {
+    console.log('❌ Google Login Error:', error);
     alert('Error al iniciar sesión con Google');
   };
 
@@ -22,11 +26,12 @@ const GoogleLoginButton = () => {
           onSuccess={handleSuccess}
           onError={handleError}
           useOneTap={false}
+          auto_select={false}
           theme="outline"
           size="large"
-          width="100%"
           text="signin_with"
           shape="rectangular"
+          logo_alignment="left"
           disabled={isLoading}
         />
       </div>
