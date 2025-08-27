@@ -109,10 +109,9 @@ export const AuthProvider = ({ children }) => {
         
         // Usar la función login que ya maneja localStorage
         login(userData, response.token);
-        console.log('Google login exitoso:', userData);
         
-        // Redirigir al dashboard
-        window.location.href = '/dashboard';
+        // Redirigir al dashboard (será manejado en el componente)
+        // La navegación se manejará en el useEffect del componente que use este hook
       } else {
         throw new Error('Respuesta inválida del servidor');
       }
