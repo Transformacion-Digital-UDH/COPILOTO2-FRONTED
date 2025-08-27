@@ -13,6 +13,7 @@ import React from 'react';
  * @param {boolean} props.required - Campo obligatorio
  * @param {boolean} props.disabled - Campo deshabilitado
  * @param {string} props.error - Mensaje de error
+ * @param {string} props.helperText - Texto de ayuda adicional
  * @param {string} props.className - Clases CSS adicionales
  * @param {Object} props.inputProps - Props adicionales para el input
  */
@@ -26,6 +27,7 @@ const FormField = ({
   required = false,
   disabled = false,
   error,
+  helperText,
   className = '',
   ...inputProps
 }) => {
@@ -105,6 +107,12 @@ const FormField = ({
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400">
           {error}
+        </p>
+      )}
+      
+      {helperText && !error && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {helperText}
         </p>
       )}
     </div>

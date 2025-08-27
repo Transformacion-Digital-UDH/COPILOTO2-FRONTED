@@ -10,7 +10,17 @@ import CancelButton from '../../../components/CancelButton.jsx';
  * Formulario para solicitar asesor técnico
  */
 const SolicitudAsesorForm = ({ onCancel, onSubmit }) => {
-  const { asesores, lineasInvestigacion, loading, submitSolicitud } = useAsesorSelection();
+  const { 
+    asesores, 
+    lineasInvestigacion, 
+    programa,
+    loading, 
+    errorLineas,
+    hasLineas,
+    isReady,
+    submitSolicitud,
+    refetchLineas
+  } = useAsesorSelection();
   
   const [formData, setFormData] = useState({
     tituloTesis: '',
@@ -95,6 +105,28 @@ const SolicitudAsesorForm = ({ onCancel, onSubmit }) => {
 
   return (
     <div className="space-y-6">
+      {/* Error de líneas de investigación */}
+      {errorLineas && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">
+                Error al cargar líneas de investigación
+              </h3>
+              <p className="text-red-700 dark:text-red-300 text-sm">
+                {errorLineas}
+              </p>
+            </div>
+            <button
+              onClick={refetchLineas}
+              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm underline"
+            >
+              Reintentar
+            </button>
+          </div>
+        </div>
+      )}
+
       <FormField
         label="Título de la tesis"
         type="text"
@@ -124,10 +156,21 @@ const SolicitudAsesorForm = ({ onCancel, onSubmit }) => {
         value={formData.lineaInvestigacion}
         onChange={(e) => handleInputChange('lineaInvestigacion', e.target.value)}
         options={lineasInvestigacion}
-        placeholder="Seleccione una línea de investigación..."
+        placeholder={
+          loading 
+            ? "Cargando líneas de investigación..." 
+            : hasLineas 
+              ? "Seleccione una línea de investigación..."
+              : "No hay líneas disponibles"
+        }
         required
         error={errors.lineaInvestigacion}
-        disabled={loading}
+        disabled={loading || !hasLineas}
+        helperText={
+          !hasLineas && !loading && !errorLineas 
+            ? "No se encontraron líneas de investigación para su programa"
+            : undefined
+        }
       />
 
       <ActionContainer align="right" className="pt-4">
@@ -139,7 +182,7 @@ const SolicitudAsesorForm = ({ onCancel, onSubmit }) => {
         <AcceptButton
           onClick={handleSubmit}
           loading={isSubmitting}
-          disabled={loading}
+          disabled={loading || !isReady}
           loadingText="Enviando..."
         />
       </ActionContainer>
