@@ -40,6 +40,19 @@ export const authAPI = {
     }
   },
 
+  // Login con formulario (email y password)
+  loginFormulario: async (email, password) => {
+    try {
+      const response = await api.post('/auth/login-formulario', {
+        email,
+        password
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Credenciales incorrectas' };
+    }
+  },
+
   // Completar perfil
   completeProfile: async (profileData) => {
     try {
