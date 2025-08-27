@@ -11,108 +11,176 @@ export const useAuthStore = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  // Inicializar con datos del localStorage si existen
-  const getInitialUser = () => {
+  // Cache de usuario en sessionStorage (más seguro que localStorage)
+  const getUserCache = () => {
     try {
-      const storedUser = localStorage.getItem('user');
-      return storedUser ? JSON.parse(storedUser) : null;
+      const cached = sessionStorage.getItem('userCache');
+      return cached ? JSON.parse(cached) : null;
     } catch (error) {
-      console.error('Error parsing stored user:', error);
-      localStorage.removeItem('user');
+      console.error('Error parsing user cache:', error);
+      sessionStorage.removeItem('userCache');
       return null;
     }
   };
 
+  const getLastFetch = () => {
+    return parseInt(sessionStorage.getItem('lastUserFetch') || '0', 10);
+  };
+
+  // Solo guardar token en localStorage (necesario para API calls)
   const getInitialToken = () => {
     return localStorage.getItem('token') || null;
   };
 
-  const initialUser = getInitialUser();
+  const initialUserCache = getUserCache();
   const initialToken = getInitialToken();
+  const initialLastFetch = getLastFetch();
 
-  const [user, setUser] = useState(initialUser);
-  const [role, setRole] = useState(initialUser?.role || null);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!initialToken && !!initialUser);
+  const [user, setUser] = useState(initialUserCache);
+  const [role, setRole] = useState(initialUserCache?.role || null);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!initialToken && !!initialUserCache);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(initialToken);
-  
+  const [lastFetch, setLastFetch] = useState(initialLastFetch);
+
+  // Configuración de cache
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+
+  // Función para determinar si necesitamos actualizar los datos del usuario
+  const shouldRefreshUser = () => {
+    const now = Date.now();
+    return (
+      !user ||                                    // Sin datos de usuario
+      (now - lastFetch) > CACHE_DURATION ||       // Cache expirado
+      !sessionStorage.getItem('userCache')        // Cache eliminado
+    );
+  };
+
+  // Función para obtener datos frescos del usuario desde la API
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+      
+      // Importar authAPI dinámicamente
+      const { authAPI } = await import('../services/authAPI');
+      const response = await authAPI.getUserProfile();
+      
+      if (response.success && response.profile) {
+        // Normalizar datos del usuario según la estructura de la API
+        const userData = {
+          id: response.profile.usuario_id,
+          fullName: `${response.profile.est_nombre} ${response.profile.est_apellido_paterno} ${response.profile.est_apellido_materno}`.trim(),
+          email: response.email,
+          role: response.role, // Roles de la API: admin, docente, estudiante, facultad, programa
+          codigo: response.profile.est_codigo,
+          dni: response.profile.est_dni,
+          ciclo: response.profile.est_ciclo,
+          programa: response.profile.program_id?.pa_nombre,
+          facultad: response.profile.program_id?.facultad_id?.fa_nombre,
+        };
+
+        // Actualizar estado
+        setUser(userData);
+        setRole(userData.role);
+        setIsAuthenticated(true);
+        
+        // Guardar en cache de sesión
+        sessionStorage.setItem('userCache', JSON.stringify(userData));
+        sessionStorage.setItem('lastUserFetch', Date.now().toString());
+        setLastFetch(Date.now());
+        
+        return userData;
+      } else {
+        throw new Error('Respuesta inválida del servidor');
+      }
+    } catch (error) {
+      console.error('Error al obtener datos del usuario:', error);
+      // Si hay error, limpiar sesión
+      logout();
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Función para login directo (usado por Google login y otros métodos)
   const login = (userData, authToken = null) => {
     // Filtrar solo datos esenciales para el frontend
     const essentialUserData = {
       id: userData.id,
       fullName: userData.fullName || userData.nombre,
       email: userData.email,
-      role: userData.role || userData.rol,
-      // Solo incluir imagen si existe y es necesaria
-      ...(userData.imagen && { imagen: userData.imagen })
+      role: userData.role || userData.rol, // Mapear roles de la API
+      // Solo incluir campos adicionales si existen
+      ...(userData.codigo && { codigo: userData.codigo }),
+      ...(userData.dni && { dni: userData.dni }),
+      ...(userData.ciclo && { ciclo: userData.ciclo }),
+      ...(userData.programa && { programa: userData.programa }),
+      ...(userData.facultad && { facultad: userData.facultad }),
     };
     
     setUser(essentialUserData);
     setRole(essentialUserData.role || null);
     setIsAuthenticated(true);
     
-    // Guardar solo datos esenciales en localStorage
-    localStorage.setItem('user', JSON.stringify(essentialUserData));
+    // Solo guardar en sessionStorage (más seguro)
+    sessionStorage.setItem('userCache', JSON.stringify(essentialUserData));
+    sessionStorage.setItem('lastUserFetch', Date.now().toString());
+    setLastFetch(Date.now());
+    
+    // Solo guardar token en localStorage (necesario para API calls)
     if (authToken) {
       localStorage.setItem('token', authToken);
       setToken(authToken);
     }
   };
 
-  // Mock login con email y password (para pruebas del formulario)
+  // Login con email y password
   const handleLogin = async (email, password) => {
     setLoading(true);
     try {
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Importar authAPI dinámicamente
+      const { authAPI } = await import('../services/authAPI');
+      const response = await authAPI.login(email, password);
       
-      // Mock validation - solo acepta emails que terminen en @udh.edu.pe
-      if (!email.endsWith('@udh.edu.pe')) {
-        throw new Error('El correo debe terminar en @udh.edu.pe');
+      if (response.success && response.token) {
+        // Guardar token
+        localStorage.setItem('token', response.token);
+        setToken(response.token);
+        
+        // Obtener datos del usuario desde /usuarios/me
+        await fetchUserData();
+      } else {
+        throw new Error(response.message || 'Credenciales inválidas');
       }
-      
-      const mockUser = {
-        fullName: 'Usuario Test',
-        email: email,
-        role: null // Sin rol específico para desarrollo
-      };
-      
-      login(mockUser);
-      console.log('Login mock exitoso:', mockUser);
     } catch (error) {
-      console.error('Error en login mock:', error.message);
-      alert(error.message);
+      console.error('Error en login:', error);
+      const errorMessage = error.message || 'Error al iniciar sesión';
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // Google login usando API real
+  // Google login integrado con API
   const googleLogin = async (googleResponse) => {
     setLoading(true);
     try {
-      // Importar authAPI dinámicamente para evitar problemas de circular dependency
+      // Importar authAPI dinámicamente
       const { authAPI } = await import('../services/authAPI');
       
       // Enviar el token de Google a nuestro backend
       const response = await authAPI.loginGoogle(googleResponse.credential || googleResponse.access_token);
       
-      // Si el backend devuelve un token JWT y datos del usuario
-      if (response.token && response.user) {
-        const userData = {
-          fullName: response.user.nombre || response.user.fullName,
-          email: response.user.email,
-          role: response.user.rol || response.user.role,
-          id: response.user.id,
-          imagen: response.user.imagen
-        };
+      // Si el backend devuelve un token JWT
+      if (response.token) {
+        // Guardar solo el token
+        localStorage.setItem('token', response.token);
+        setToken(response.token);
         
-        // Usar la función login que ya maneja localStorage
-        login(userData, response.token);
-        console.log('Google login exitoso:', userData);
+        // Obtener datos frescos del usuario desde /usuarios/me
+        await fetchUserData();
         
-        // Redirigir al dashboard
-        window.location.href = '/dashboard';
       } else {
         throw new Error('Respuesta inválida del servidor');
       }
@@ -131,77 +199,56 @@ export const AuthProvider = ({ children }) => {
     setRole(null);
     setIsAuthenticated(false);
     setToken(null);
+    setLastFetch(0);
     
-    // Limpiar localStorage
+    // Limpiar almacenamiento
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('userCache');
+    sessionStorage.removeItem('lastUserFetch');
     
     // Redirigir al login
     window.location.href = '/login';
   };
 
-  // Función para verificar si el token es válido (opcional)
-  const checkTokenValidity = async () => {
-    const storedToken = localStorage.getItem('token');
-    if (!storedToken) {
-      logout();
-      return false;
-    }
-    
-    try {
-      // Aquí podrías hacer una llamada al backend para verificar el token
-      // const response = await authAPI.verifyToken();
-      return true;
-    } catch (error) {
-      console.error('Token inválido:', error);
-      logout();
-      return false;
+  // Función para verificar y refrescar datos del usuario si es necesario
+  const ensureFreshUserData = async () => {
+    if (shouldRefreshUser() && token) {
+      try {
+        await fetchUserData();
+      } catch (error) {
+        console.error('Error al refrescar datos del usuario:', error);
+      }
     }
   };
 
-  // Función para cambiar de rol temporalmente (solo para desarrollo)
-  const changeRole = (newRole) => {
-    setRole(newRole);
-    if (user) {
-      const updatedUser = {
-        ...user,
-        role: newRole
-      };
-      setUser(updatedUser);
-      // Actualizar localStorage también
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+  // Efecto para refrescar datos en eventos importantes
+  useEffect(() => {
+    // Solo refrescar si hay token y no estamos cargando
+    if (token && !loading && shouldRefreshUser()) {
+      ensureFreshUserData();
     }
-  };
+  }, [token]);
 
   // Efecto para sincronizar cambios en localStorage entre pestañas
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'token' || e.key === 'user') {
-        // Recargar datos del localStorage si cambiaron en otra pestaña
+      if (e.key === 'token') {
         const newToken = localStorage.getItem('token');
-        const newUser = localStorage.getItem('user');
         
-        if (!newToken || !newUser) {
-          // Si se eliminaron, hacer logout
+        if (!newToken) {
+          // Si se eliminó el token, hacer logout
           logout();
-        } else {
-          try {
-            const parsedUser = JSON.parse(newUser);
-            setUser(parsedUser);
-            setRole(parsedUser.role || null);
-            setToken(newToken);
-            setIsAuthenticated(true);
-          } catch (error) {
-            console.error('Error parsing user from storage:', error);
-            logout();
-          }
+        } else if (newToken !== token) {
+          // Si cambió el token, actualizar y refrescar datos
+          setToken(newToken);
+          fetchUserData();
         }
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  }, [token]);
   
   return (
     <AuthContext.Provider value={{ 
@@ -212,11 +259,11 @@ export const AuthProvider = ({ children }) => {
       token,
       login,
       logout,
-      setRole,
-      changeRole,
       handleLogin,
       googleLogin,
-      checkTokenValidity
+      fetchUserData,
+      ensureFreshUserData,
+      shouldRefreshUser
     }}>
       {children}
     </AuthContext.Provider>
