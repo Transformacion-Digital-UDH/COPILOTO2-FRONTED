@@ -143,21 +143,13 @@ export const AuthProvider = ({ children }) => {
       const { authAPI } = await import('../services/authAPI');
       const response = await authAPI.loginFormulario(email, password);
       
-      if (response.message === 'Login exitoso' && response.token && response.user) {
+      if (response.message === 'Login exitoso' && response.token) {
         // Guardar token
         localStorage.setItem('token', response.token);
         setToken(response.token);
         
-        // Normalizar datos del usuario para compatibilidad
-        const userData = {
-          id: response.user.id,
-          fullName: response.user.fullName || response.user.email, // Fallback al email si no hay nombre completo
-          email: response.user.email,
-          role: response.user.rol // Mapear 'rol' a 'role'
-        };
-        
-        // Actualizar estado del usuario
-        login(userData, response.token);
+        // Obtener datos completos del usuario desde /usuarios/me
+        await fetchUserData();
         
       } else {
         throw new Error(response.message || 'Credenciales inválidas');
