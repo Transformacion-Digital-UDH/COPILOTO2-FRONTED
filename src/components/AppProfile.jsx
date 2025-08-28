@@ -1,90 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Settings } from 'lucide-react';
+import Swal from 'sweetalert2';
 
-// Mock components - replace with your actual implementations
-const UploadProfile = ({ url, urlRequest, faRole, pathSignature }) => (
-  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
-    <div className="space-y-4">
-      <div className="text-gray-500 dark:text-gray-400">
-        <Settings className="mx-auto h-12 w-12" />
-      </div>
-      <div>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          {faRole ? `Upload ${faRole} signature` : 'Upload signature'}
-        </p>
+// Services and hooks
+import authAPI from '../services/authAPI';
+import { useAuthStore } from '../hooks/useAuthStore';
+
+// Minimal UploadProfile stub (kept for signature tab)
+const UploadProfile = (props) => {
+  const { faRole } = props;
+  return (
+    <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
+      <div className="space-y-4">
+        <div className="text-gray-500 dark:text-gray-400">
+          <Settings className="mx-auto h-12 w-12" />
+        </div>
+        <div>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {faRole ? `Upload ${faRole} signature` : 'Upload signature'}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
-
-// Mock auth store - replace with your actual auth implementation
-const useAuthStore = () => ({
-  id: '1',
-  email: 'user@example.com',
-  token: 'mock-token',
-  role: 'estudiante',
-  phone: '',
-  siglas: '',
-  rango: ''
-});
-
-// Mock axios - replace with your actual API calls
-const mockAxios = {
-  get: async (url) => {
-    // Mock API responses based on URL
-    if (url.includes('/api/grades')) {
-      return {
-        data: {
-          'Dr.': 'DOCTOR',
-          'Mg.': 'MAGISTER',
-          'Lic.': 'LICENCIADO',
-          'Ing.': 'INGENIERO'
-        }
-      };
-    }
-    
-    if (url.includes('/api/me/')) {
-      return {
-        data: {
-          success: true,
-          role: 'estudiante',
-          profile: {
-            stu_name: 'JUAN CARLOS',
-            stu_lastname_m: 'PEREZ',
-            stu_lastname_f: 'GARCIA',
-            stu_dni: '12345678',
-            stu_code: '2021001',
-            stu_faculty: 'FACULTAD DE INGENIERÍA',
-            stu_program: 'INGENIERÍA DE SISTEMAS',
-            stu_telephone: '987654321',
-            stu_sede: 'HUÁNUCO'
-          }
-        }
-      };
-    }
-    
-    return { data: {} };
-  },
-  put: async (url, data) => {
-    return {
-      data: {
-        success: true,
-        profile: data
-      }
-    };
-  }
-};
-
-// Mock Swal - replace with your actual SweetAlert2 implementation
-const mockSwal = {
-  fire: async (options) => {
-    if (options.showCancelButton) {
-      return { isConfirmed: confirm(options.text || options.title) };
-    } else {
-      alert(options.text || options.title);
-      return { isConfirmed: true };
-    }
-  }
+  );
 };
 
 const AppProfile = () => {
@@ -176,8 +114,24 @@ const AppProfile = () => {
   // API calls
   const selectGrades = async () => {
     try {
-      const response = await mockAxios.get("/api/grades");
-      setGradosAcademicos(response.data);
+      // If there's a dedicated grades endpoint in the backend, call it via the shared api instance.
+      // Fallback to a small local map if endpoint is not present.
+      try {
+        const res = await authAPI.getGrades ? await authAPI.getGrades() : null;
+        if (res && res.data) {
+          setGradosAcademicos(res.data);
+          return;
+        }
+      } catch {
+        // ignore and fallback
+      }
+
+      setGradosAcademicos({
+        'Dr.': 'DOCTOR',
+        'Mg.': 'MAGISTER',
+        'Lic.': 'LICENCIADO',
+        'Ing.': 'INGENIERO'
+      });
     } catch (error) {
       console.log(error);
     }
@@ -185,94 +139,91 @@ const AppProfile = () => {
 
   const getUserData = async () => {
     setLoad(true);
-    const profile_id = authStore.id;
-    
     try {
-      const response = await mockAxios.get(`/api/me/${profile_id}`);
-      if (response.data.success) {
-        const data = response.data.profile;
-        const role = response.data.role;
+      // authAPI.getUserProfile() returns response.data according to the service
+      const response = await authAPI.getUserProfile();
+
+      // Example response (user provided): success, role, profile, email
+      if (response && response.success && response.profile) {
+        const data = response.profile;
+        const role = response.role || 'estudiante';
         setUserRole(role);
-        
+
+        // estudiante uses program_id and facultad inside program
         if (
-          (role === 'estudiante' && data.stu_sede) ||
+          (role === 'estudiante' && (data.est_sede || data.sede_id)) ||
           (role === 'asesor' && data.adv_sede) ||
           (role === 'programa' && data.pa_sede)
         ) {
           setSedeLocked(true);
         }
 
-        switch (role) {
-          case "estudiante":
-            setForm(prev => ({
-              ...prev,
-              nombres: data.stu_name,
-              apellido_paterno: data.stu_lastname_m,
-              apellido_materno: data.stu_lastname_f,
-              dni: data.stu_dni,
-              codigo: data.stu_code,
-              facultad: data.stu_faculty,
-              programa: data.stu_program,
-              cel: data.stu_telephone,
-              sede: data.stu_sede,
-              rol: role
-            }));
-            break;
+        if (role === 'estudiante') {
+          setForm(prev => ({
+            ...prev,
+            nombres: data.est_nombre || prev.nombres,
+            apellido_paterno: data.est_apellido_paterno || prev.apellido_paterno,
+            apellido_materno: data.est_apellido_materno || prev.apellido_materno,
+            dni: data.est_dni || prev.dni,
+            codigo: data.est_codigo ? String(data.est_codigo) : prev.codigo,
+            facultad: data.program_id?.facultad_id?.fa_nombre || prev.facultad,
+            programa: data.program_id?.pa_nombre || prev.programa,
+            cel: data.est_celular || prev.cel,
+            sede: data.sede_id || prev.sede,
+            email: response.email || prev.email,
+            rol: role
+          }));
+        } else if (role === 'asesor') {
+          setForm(prev => ({
+            ...prev,
+            nombres: data.adv_name || prev.nombres,
+            apellido_paterno: data.adv_lastname_m || prev.apellido_paterno,
+            apellido_materno: data.adv_lastname_f || prev.apellido_materno,
+            dni: data.adv_dni || prev.dni,
+            rango: data.adv_rank || prev.rango,
+            orcid: data.adv_orcid || prev.orcid,
+            facultad: data.adv_faculty || prev.facultad,
+            programa: data.adv_programs || prev.programa,
+            es_jurado: data.adv_is_jury || prev.es_jurado,
+            firma: data.adv_signature || prev.firma,
+            cel: data.adv_telephone || prev.cel,
+            sede: data.adv_sede || prev.sede,
+            rol: role
+          }));
+        } else if (role === 'programa') {
+          // Programa: construir nombre completo del coordinador si está disponible
+          // Use only the coordinator's given names in `nombres` and keep apellidos in their fields
+          const coordinatorGivenNames = data.pa_cor_nombre || '';
 
-          case "asesor":
-            setForm(prev => ({
-              ...prev,
-              nombres: data.adv_name,
-              apellido_paterno: data.adv_lastname_m,
-              apellido_materno: data.adv_lastname_f,
-              dni: data.adv_dni,
-              rango: data.adv_rank,
-              orcid: data.adv_orcid,
-              facultad: data.adv_faculty,
-              programa: data.adv_programs,
-              es_jurado: data.adv_is_jury,
-              firma: data.adv_signature,
-              cel: data.adv_telephone,
-              sede: data.adv_sede,
-              rol: role
-            }));
-            break;
-
-          case "facultad":
-            setForm(prev => ({
-              ...prev,
-              nombres: data.fa_name,
-              apellido_paterno: data.fa_lastname_m,
-              apellido_materno: data.fa_lastname_f,
-              facultad: data.fa_faculty,
-              rango: data.fa_rank,
-              siglas: data.fa_siglas,
-              rol: role
-            }));
-            break;
-
-          case "programa":
-            setForm(prev => ({
-              ...prev,
-              nombres: data.pa_name,
-              apellido_paterno: data.pa_lastname_m,
-              apellido_materno: data.pa_lastname_f,
-              facultad: data.pa_faculty,
-              programa: data.pa_program,
-              rango: data.pa_rank,
-              siglas: data.pa_siglas,
-              sede: data.pa_sede,
-              rol: role
-            }));
-            break;
-
-          default:
-            console.warn("Rol desconocido", role);
-            break;
+          setForm(prev => ({
+            ...prev,
+            nombres: coordinatorGivenNames || data.pa_nombre || prev.nombres,
+            apellido_paterno: data.pa_cor_apellido_paterno || prev.apellido_paterno,
+            apellido_materno: data.pa_cor_apellido_materno || prev.apellido_materno,
+            facultad: data.facultad || data.program_id?.facultad_id?.fa_nombre || prev.facultad,
+            programa: data.pa_nombre || data.pa_name || prev.programa,
+            rango: data.pa_cor_rango || prev.rango,
+            siglas: data.pa_siglas || prev.siglas,
+            sede: data.sede || data.sede_id || prev.sede,
+            rol: role
+          }));
+        } else {
+          // Facultad mapping (decano / secretaria)
+          setForm(prev => ({
+            ...prev,
+            nombres: data.fa_dec_nombre || data.fa_name || prev.nombres,
+            apellido_paterno: data.fa_dec_apellido_paterno || prev.apellido_paterno,
+            apellido_materno: data.fa_dec_apellido_materno || prev.apellido_materno,
+            facultad: data.fa_nombre || prev.facultad,
+            rango: data.fa_dec_rango || prev.rango,
+            siglas: data.fa_siglas || prev.siglas,
+            rol: role
+          }));
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error loading profile:', error);
+      Swal.fire('Error', 'No se pudo cargar la información del perfil', 'error');
     } finally {
       setLoad(false);
     }
@@ -283,7 +234,7 @@ const AppProfile = () => {
     
     // Validations
     if ((userRole === 'estudiante' || userRole === 'asesor') && form.cel.length > 0 && !isCelularValid()) {
-      mockSwal.fire({
+      Swal.fire({
         text: 'Número de celular inválido',
         icon: 'error'
       });
@@ -291,7 +242,7 @@ const AppProfile = () => {
     }
 
     if (userRole === 'asesor' && form.orcid.length > 0 && !isOrcidValid()) {
-      mockSwal.fire({
+      Swal.fire({
         text: 'Orcid inválido',
         icon: 'error'
       });
@@ -299,7 +250,7 @@ const AppProfile = () => {
     }
 
     if ((userRole === 'programa' || userRole === 'facultad') && (!form.rango || form.rango.trim() === '')) {
-      mockSwal.fire({
+      Swal.fire({
         text: 'Debes seleccionar un grado académico',
         icon: 'error'
       });
@@ -307,7 +258,7 @@ const AppProfile = () => {
     }
 
     if (userRole === 'estudiante' && (!form.sede || form.sede.trim() === '')) {
-      mockSwal.fire({
+      Swal.fire({
         text: 'Debes seleccionar la sede',
         icon: 'error'
       });
@@ -315,7 +266,7 @@ const AppProfile = () => {
     }
 
     try {
-      const result = await mockSwal.fire({
+      const result = await Swal.fire({
         title: 'Actualizacion de datos',
         text: '¿Declara bajo juramento que toda la información ingresada en el sistema es veraz y correcta?',
         showCancelButton: true
@@ -323,15 +274,26 @@ const AppProfile = () => {
 
       if (result.isConfirmed) {
         setLoad(true);
-        const profile_id = authStore.id;
-        const response = await mockAxios.put(`/api/me/actualizar/${profile_id}`, form);
-        
-        if (response.data.success) {
-          mockSwal.fire({
-            title: '¡Perfil actualizado!',
-            text: 'Se han guardado tus datos correctamente',
-            icon: 'success'
-          });
+
+        // Use authAPI.completeProfile to submit updated profile
+        try {
+          const res = await authAPI.completeProfile(form);
+          if (res && res.success) {
+            await Swal.fire({
+              title: '¡Perfil actualizado!',
+              text: 'Se han guardado tus datos correctamente',
+              icon: 'success'
+            });
+
+            // Refresh local data
+            await getUserData();
+          } else {
+            throw new Error(res?.message || 'Error al actualizar perfil');
+          }
+        } catch (err) {
+          console.error('Update profile error:', err);
+          const msg = err?.message || 'No se pudo actualizar el perfil';
+          Swal.fire('Error', msg, 'error');
         }
       }
     } catch (error) {
@@ -622,7 +584,7 @@ const AppProfile = () => {
                           Correo institucional
                         </label>
                         <p className="break-words mt-1 block w-full px-4 py-[9px] bg-slate-100 focus:bg-slate-100 dark:focus:bg-gray-700 dark:bg-gray-900 rounded-md text-gray-600 dark:text-slate-300 border-gray-300 dark:border-gray-900 shadow-sm cursor-not-allowed">
-                          {authStore.email}
+                          {form.email || authStore.user?.email || ''}
                         </p>
                       </div>
                     )}
