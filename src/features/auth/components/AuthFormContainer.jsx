@@ -28,13 +28,8 @@ const AuthFormContainer = () => {
         </div>
       </div>
       
-      {/* Formulario de prueba */}
-      <div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-4">
-          🧪 Solo para pruebas (sin API)
-        </p>
-        <LoginForm />
-      </div>
+      {/* Formulario de login */}
+      <LoginForm />
       
       <div className="mt-8 text-center">
         <a 
