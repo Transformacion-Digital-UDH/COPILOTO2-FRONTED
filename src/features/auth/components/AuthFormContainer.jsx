@@ -1,23 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import GoogleLoginButton from './GoogleLoginButton';
 import LoginForm from './LoginForm';
-import RegisterForm from './RegisterForm';
 
 const AuthFormContainer = () => {
-  const [isRegisterMode, setIsRegisterMode] = useState(false);
-
-  const handleSwitchToRegister = () => {
-    setIsRegisterMode(true);
-  };
-
-  const handleSwitchToLogin = () => {
-    setIsRegisterMode(false);
-  };
-
-  if (isRegisterMode) {
-    return <RegisterForm onSwitchToLogin={handleSwitchToLogin} />;
-  }
-
   return (
     <div className="w-full max-w-md rounded-lg px-8 py-6 self-center mx-auto shadow-lg dark:bg-gray-800/95 relative">
       
@@ -26,15 +11,6 @@ const AuthFormContainer = () => {
         <h6 className="text-2xl text-azul dark:text-gray-300 mb-4 tracking-wide">Iniciar sesión</h6>
         <p className="text-base text-gray-600 dark:text-gray-300 tracking-wide mb-3">
           Accede con tu correo institucional <span className="font-semibold">@udh.edu.pe</span>
-        </p>
-        <p className="text-base text-gray-600 dark:text-gray-300 tracking-wide">
-          ¿No tienes una cuenta?{' '}
-          <button 
-            onClick={handleSwitchToRegister}
-            className="text-base hover:underline tracking-wide text-azul dark:text-blue-400"
-          >
-            Regístrate aquí
-          </button>
         </p>
       </div>
       
