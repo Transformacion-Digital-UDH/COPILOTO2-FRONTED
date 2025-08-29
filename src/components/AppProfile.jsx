@@ -56,8 +56,8 @@ const AppProfile = () => {
 
   const tabs = [
     { id: 'profile', name: 'Perfil', icon: User },
-    ...(userRole === 'asesor' || userRole === 'programa' || userRole === 'facultad' 
-      ? [{ id: 'signature', name: 'Firma Escaneada', icon: Settings }] 
+    ...(userRole === 'programa' || userRole === 'facultad'
+      ? [{ id: 'signature', name: 'Firma Escaneada', icon: Settings }]
       : [])
   ];
 
@@ -82,27 +82,8 @@ const AppProfile = () => {
       .slice(0, 8);
   };
 
-  const formatORCID = (value) => {
-    let rawValue = value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-    rawValue = rawValue.slice(0, 16);
-    
-    let formatted = '';
-    for (let i = 0; i < rawValue.length; i++) {
-      if (i > 0 && i % 4 === 0) {
-        formatted += '-';
-      }
-      formatted += rawValue[i];
-    }
-    return formatted;
-  };
-
   const isCelularValid = () => {
     return /^[0-9]{9}$/.test(form.cel);
-  };
-
-  const isOrcidValid = () => {
-    const ORCID_REGEX = /^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
-    return ORCID_REGEX.test(form.orcid);
   };
 
   // Handle input changes
@@ -152,7 +133,6 @@ const AppProfile = () => {
         // estudiante uses program_id and facultad inside program
         if (
           (role === 'estudiante' && (data.est_sede || data.sede_id)) ||
-          (role === 'asesor' && data.adv_sede) ||
           (role === 'programa' && data.pa_sede)
         ) {
           setSedeLocked(true);
@@ -173,21 +153,27 @@ const AppProfile = () => {
             email: response.email || prev.email,
             rol: role
           }));
-        } else if (role === 'asesor') {
+        } else if (role === 'docente') {
+          // Docente: map fields from rev_ prefixed profile
+          const firstRevMultiple = Array.isArray(data.rev_multiple_data) && data.rev_multiple_data.length > 0 ? data.rev_multiple_data[0] : null;
+          const programaName = firstRevMultiple?.programa_id?.pa_nombre || data.program_id?.pa_nombre || '';
+          const facultadName = firstRevMultiple?.programa_id?.facultad_id?.fa_nombre || data.program_id?.facultad_id?.fa_nombre || data.facultad || '';
+          const sedeName = firstRevMultiple?.sede_id?.se_nombre || data.sede || (data.sede_id && (data.sede_id.se_nombre || data.sede_id)) || '';
+
           setForm(prev => ({
             ...prev,
-            nombres: data.adv_name || prev.nombres,
-            apellido_paterno: data.adv_lastname_m || prev.apellido_paterno,
-            apellido_materno: data.adv_lastname_f || prev.apellido_materno,
-            dni: data.adv_dni || prev.dni,
-            rango: data.adv_rank || prev.rango,
-            orcid: data.adv_orcid || prev.orcid,
-            facultad: data.adv_faculty || prev.facultad,
-            programa: data.adv_programs || prev.programa,
-            es_jurado: data.adv_is_jury || prev.es_jurado,
-            firma: data.adv_signature || prev.firma,
-            cel: data.adv_telephone || prev.cel,
-            sede: data.adv_sede || prev.sede,
+            nombres: data.rev_nombre || prev.nombres,
+            apellido_paterno: data.rev_apellido_paterno || prev.apellido_paterno,
+            apellido_materno: data.rev_apellido_materno || prev.apellido_materno,
+            dni: data.rev_dni || prev.dni,
+            rango: data.rev_rango || prev.rango,
+            orcid: data.rev_orcid || prev.orcid,
+            firma: data.rev_firma || data.firma || prev.firma,
+            cel: data.rev_celular || prev.cel,
+            programa: programaName || prev.programa,
+            facultad: facultadName || prev.facultad,
+            sede: sedeName || prev.sede,
+            email: response.email || data.rev_correo || prev.email,
             rol: role
           }));
         } else if (role === 'programa') {
@@ -232,18 +218,10 @@ const AppProfile = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     
-    // Validations
-    if ((userRole === 'estudiante' || userRole === 'asesor') && form.cel.length > 0 && !isCelularValid()) {
+  // Validations
+  if (userRole === 'estudiante' && form.cel.length > 0 && !isCelularValid()) {
       Swal.fire({
         text: 'Número de celular inválido',
-        icon: 'error'
-      });
-      return;
-    }
-
-    if (userRole === 'asesor' && form.orcid.length > 0 && !isOrcidValid()) {
-      Swal.fire({
-        text: 'Orcid inválido',
         icon: 'error'
       });
       return;
@@ -373,13 +351,6 @@ const AppProfile = () => {
                   <div className="flex-1 space-y-4">
                     <div className="grid grid-cols-1 gap-4">
                       <div className="mt-2">
-                        {userRole === 'asesor' && (
-                          <UploadProfile
-                            url={form.firma}
-                            urlRequest={`/api/adviser/update/${authStore.id}/signature?_method=PUT`}
-                          />
-                        )}
-
                         {userRole === 'programa' && (
                           <UploadProfile
                             url={form.firma}
@@ -420,7 +391,7 @@ const AppProfile = () => {
                     <div>
                       <label className="block capitalize tracking-wide text-blue-600 dark:text-gray-400 text-sm font-medium">
                         Nombres
-                        {userRole !== 'estudiante' && userRole !== 'asesor' && (
+                        {userRole !== 'estudiante' && (
                           <strong className="text-red-500/80 dark:text-red-400 text-lg">*</strong>
                         )}
                       </label>
@@ -449,7 +420,7 @@ const AppProfile = () => {
                     <div>
                       <label className="block capitalize tracking-wide text-blue-600 dark:text-gray-400 text-sm font-medium">
                         Apellido paterno
-                        {userRole !== 'estudiante' && userRole !== 'asesor' && (
+                        {userRole !== 'estudiante' && (
                           <strong className="text-red-500/80 dark:text-red-400 text-lg">*</strong>
                         )}
                       </label>
@@ -478,7 +449,7 @@ const AppProfile = () => {
                     <div>
                       <label className="block capitalize tracking-wide text-blue-600 dark:text-gray-400 text-sm font-medium">
                         Apellido materno
-                        {userRole !== 'estudiante' && userRole !== 'asesor' && (
+                        {userRole !== 'estudiante' && (
                           <strong className="text-red-500/80 dark:text-red-400 text-lg">*</strong>
                         )}
                       </label>
@@ -532,9 +503,7 @@ const AppProfile = () => {
                           Programa académico
                         </label>
                         <p className="mt-1 block w-full px-4 py-[9px] bg-slate-100 focus:bg-slate-100 dark:focus:bg-gray-700 dark:bg-gray-900 rounded-md text-gray-600 dark:text-slate-300 border-gray-300 dark:border-gray-900 shadow-sm cursor-not-allowed">
-                          {userRole === 'asesor' && Array.isArray(form.programa)
-                            ? [...new Set(form.programa.map(p => p.adv_program))].join(', ')
-                            : form.programa}
+                          {form.programa}
                         </p>
                       </div>
                     )}
@@ -552,7 +521,7 @@ const AppProfile = () => {
                     )}
 
                     {/* CAMPO PARA EL GRADO ACADEMICO */}
-                    {(userRole === 'programa' || userRole === 'facultad' || userRole === 'asesor') && (
+                    {(userRole === 'programa' || userRole === 'facultad') && (
                       <div>
                         <label className="block capitalize tracking-wide text-blue-600 dark:text-gray-400 text-sm font-medium">
                           Grado académico
@@ -578,7 +547,7 @@ const AppProfile = () => {
                     )}
 
                     {/* CAMPO PARA EL CORREO INSTITUCIONAL */}
-                    {userRole !== 'programa' && userRole !== 'facultad' && userRole !== 'asesor' && (
+                    {userRole !== 'programa' && userRole !== 'facultad' && (
                       <div>
                         <label className="block capitalize tracking-wide text-blue-600 dark:text-gray-400 text-sm font-medium">
                           Correo institucional
@@ -624,16 +593,14 @@ const AppProfile = () => {
                           )
                         ) : (
                           <p className="mt-1 block w-full px-4 py-[9px] bg-slate-100 dark:bg-gray-900 rounded-md text-gray-600 dark:text-slate-300 border-gray-300 dark:border-gray-900 shadow-sm cursor-not-allowed">
-                            {userRole === 'asesor' && Array.isArray(form.programa)
-                              ? [...new Set(form.programa.map(p => p.adv_sede))].join(', ')
-                              : form.sede}
+                            {form.sede}
                           </p>
                         )}
                       </div>
                     )}
 
                     {/* CAMPO PARA EL NUMERO CELULAR */}
-                    {(userRole === 'estudiante' || userRole === 'asesor') && (
+                    {userRole === 'estudiante' && (
                       <div>
                         <label className="block capitalize tracking-wide text-blue-600 dark:text-gray-400 text-sm font-medium">
                           Número celular
@@ -654,30 +621,7 @@ const AppProfile = () => {
                     )}
 
                     {/* CAMPO PARA EL ORCID */}
-                    {userRole === 'asesor' && (
-                      <div>
-                        <label className="block tracking-wide text-blue-600 dark:text-gray-400 text-sm font-medium uppercase">
-                          ORCID
-                          <strong className="text-red-500/80 dark:text-red-400 text-lg">*</strong>
-                        </label>
-                        <input
-                          type="text"
-                          value={form.orcid}
-                          onChange={(e) => handleInputChange('orcid', e.target.value, formatORCID)}
-                          placeholder="XXXX-XXXX-XXXX-XXXX"
-                          required
-                          className="uppercase mt-1 block w-full bg-white focus:bg-slate-100 dark:focus:bg-gray-900 dark:bg-gray-700 rounded-md text-gray-600 dark:text-slate-300 border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-gray-600 dark:focus:ring-gray-800"
-                        />
-                        <p className="text-xs text-gray-500 dark:text-gray-300 mt-1 px-3">
-                          Puedes modificar este campo
-                        </p>
-                        {!isOrcidValid() && form.orcid.length > 0 && (
-                          <p className="text-red-500 text-xs mt-1 px-3">
-                            El formato del ORCID no es válido.
-                          </p>
-                        )}
-                      </div>
-                    )}
+                    {/* ORCID field removed (was specific to adviser role) */}
 
                     {/* CAMPO PARA LAS SIGLAS */}
                     {(userRole === 'programa' || userRole === 'facultad') && (
@@ -701,7 +645,7 @@ const AppProfile = () => {
                     )}
 
                     {/* Guía para indicar que es importante su número de celular para el envío de correos */}
-                    {(userRole === 'estudiante' || userRole === 'asesor') && (
+                    {userRole === 'estudiante' && (
                       <div className="animate-bounce">
                         <div className="p-2 border border-red-500 dark:border-red-400 rounded-3xl">
                           <p className="text-[16px] text-red-700 dark:text-red-400 italic">
